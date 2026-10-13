@@ -1,0 +1,92 @@
+// The LINE bot that sits in the Mot Dang team group.
+//
+// One Worker, three jobs: take the webhook from LINE, keep what arrives
+// (photo bytes in R2, a row per event in D1), and answer in the chat with a
+// reply token — replies are free and unlimited, pushes are metered, so the
+// only push this Worker sends is the nightly summary on the cron below.
+//
+// deploy.sh is the whole release: creates the D1 database and the R2 bucket on
+// first run, applies migrations, deploys, attaches line.motdang.net.
+// Runs on the nanobotco-fleet token, same as white-label-ai.
+{
+  "name": "motdang-line",
+  "account_id": "fe332688b1b25b543f8429d7f08292a3",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-08-27",
+  "workers_dev": false,
+  "observability": { "enabled": true },
+
+  // Bangkok is UTC+7 and does not move for daylight saving, so these two are
+  // fixed: 00:00 UTC = 07:00 the morning agenda, 13:00 UTC = 20:00 the nightly
+  // summary. src/worker.js reads event.cron to tell them apart.
+  // "30 * * * *" is the hourly alerts run; it pushes only with ALERTS "on".
+  // "0 2 * * *" is 09:00 Bangkok, the Golf Ball Drop posts (src/gbd.js).
+  "triggers": { "crons": ["0 0 * * *", "0 13 * * *", "30 * * * *", "0 2 * * *"] },
+
+  // Reads the shop sign off a photo. Same binding white-label-ai runs on; the
+  // model is a var so it can be swapped without a code change. Chosen
+  // 2026-09-07 on a real photo: GLM-5.3-flash answered in 8.6 s with clean
+  // JSON and nulls where the sign showed nothing. Qwen 3.8 truncated, Gemma 4
+  // spent its budget on reasoning, Llama 3.2 Vision wants a licence click.
+  "ai": { "binding": "AI" },
+
+  "r2_buckets": [
+    // Photo bytes, exactly as LINE served them, plus the compact match index
+    // built from the site's own name index (scripts/build_match_index.py).
+    { "binding": "INBOX", "bucket_name": "motdang-line-inbox" }
+  ],
+
+  "d1_databases": [
+    {
+      // Binding name must stay DB — worker.js reads env.DB.
+      "binding": "DB",
+      "database_name": "motdang-line",
+      "database_id": "e730e70b-0f63-416c-ab85-df10f5626654",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "vars": {
+    // Where a reply points a person who has to see the thing on the web.
+    // "off" — silent unless spoken to. Nan, 2026-09-18: "I will say @bot if I
+    // want to talk to it or @nanobotco". src/line.js answers only the single
+    // event that carried an address and drops everything else, pushes included;
+    // what it would have said goes to the log. "on" restores the talking bot.
+    "SPEAK": "off",
+    // The morning agenda, and the only thing the mute above lets through.
+    // "off", or removing this line, stops it alone and leaves everything else
+    // as it is. Nan asked for it 2026-09-19. The calendar it reads is a secret,
+    // CALENDAR_ICS, set by deploy.sh from keys.json.
+    "AGENDA": "on",
+    "AGENDA_TZ": "Asia/Bangkok",
+    // The six dated posts in the Golf Ball Drop room (src/gbd.js, pushGbd).
+    // "off", or removing this line, holds them; nothing else depends on it.
+    "GBD_POSTS": "on",
+
+    // Mot Dang pages from LINE (src/pages.js): one-to-one chats build the
+    // sender's page at /u/<slug>. "off" leaves one-to-one chats to the OA's
+    // own auto-replies, as before; "on" answers them here. Turning it on is
+    // a decision for the LINE side too — see README, "Pages from LINE".
+    "PAGES": "off",
+    // The reasons to add Mot Dang on LINE (Nan, 2026-09-28), one var each.
+    // Any one of these "on" makes the Worker answer one-to-one chats. README,
+    // "The LINE door", says what each does.
+    "PINS": "off",
+    "ASK": "off",
+    "ALERTS": "off",
+    "STAMPS": "off",
+    "OWNERS": "off",
+    "SPOTTERS": "off",
+    "SAFE": "off",
+    // Alert pushes a month, across everyone. Pushes are metered by LINE.
+    "ALERT_CAP": "300",
+    // The address the bot hands out. Moves to https://motdang.net/u/ if the
+    // path is ever routed there.
+    "PAGE_BASE": "https://line.motdang.net/u/",
+    // Where rain and flood answers from the rich menu are forwarded.
+    "CLAIMS_BASE": "https://mot-dang-claims.nanobotco.workers.dev",
+
+    "SITE": "https://motdang.net",
+    "SIGN_MODEL": "@cf/zai-org/glm-5.3-flash"
+  }
+}

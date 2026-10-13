@@ -1,0 +1,658 @@
+{
+ "id": "wats",
+ "need": 9,
+ "th": "ไหว้พระ ๙ วัด",
+ "en": "Nine wats",
+ "link": "https://motdang.net/wats/",
+ "source": "mot-dang/data/wats.json (importers/build_wats.py): every stop on its 8 rounds of nine, deduplicated by record id. Any nine of them completes the round. `code` is the short place ID from mot-dang/data/curated/place_codes.json.",
+ "stops": [
+  {
+   "id": "cm-osm-way-243018378",
+   "th": "วัดพันเตา",
+   "en": "Wat Phan Tao",
+   "lat": 18.787692,
+   "lng": 98.987453,
+   "radius_m": 150,
+   "code": "QJYC8"
+  },
+  {
+   "id": "cm-osm-way-261339003",
+   "th": "วัดดวงดี",
+   "en": "Wat Duang Di",
+   "lat": 18.789488,
+   "lng": 98.988499,
+   "radius_m": 150,
+   "code": "ASSSB"
+  },
+  {
+   "id": "cm-osm-way-383205231",
+   "th": "วัดอุโมงค์มหาเถรจันทร์",
+   "en": "Wat Umong Maha Therachan",
+   "lat": 18.789464,
+   "lng": 98.989887,
+   "radius_m": 150,
+   "code": "FXKA2"
+  },
+  {
+   "id": "cm-osm-way-383205227",
+   "th": "วัดป้านปิง",
+   "en": "Wat Panping",
+   "lat": 18.789661,
+   "lng": 98.990527,
+   "radius_m": 150,
+   "code": "DWENS"
+  },
+  {
+   "id": "cm-osm-way-135952556",
+   "th": "วัดดอกเอื้อง",
+   "en": "Wat Dokeung",
+   "lat": 18.790175,
+   "lng": 98.992491,
+   "radius_m": 150,
+   "code": "6K5YS"
+  },
+  {
+   "id": "cm-osm-way-356585930",
+   "th": "วัดหมื่นล้าน",
+   "en": "Wat Muen Larn",
+   "lat": 18.788116,
+   "lng": 98.992086,
+   "radius_m": 150,
+   "code": "5BASM"
+  },
+  {
+   "id": "cm-osm-way-360858585",
+   "th": "วัดผ้าขาว",
+   "en": "Wat Pha Khao",
+   "lat": 18.785681,
+   "lng": 98.991399,
+   "radius_m": 150,
+   "code": "985D4"
+  },
+  {
+   "id": "cm-osm-way-246253475",
+   "th": "วัดพันอ้น",
+   "en": "Wat Phun Ohn",
+   "lat": 18.78759,
+   "lng": 98.991168,
+   "radius_m": 150,
+   "code": "DJXHB"
+  },
+  {
+   "id": "cm-osm-way-691941076",
+   "th": "วัดสำเภา",
+   "en": "Wat Sam Pao",
+   "lat": 18.788241,
+   "lng": 98.99058,
+   "radius_m": 150,
+   "code": "1ERMP"
+  },
+  {
+   "id": "cm-osm-way-356588870",
+   "th": "วัดดอกคำ",
+   "en": "Wat Dokkham",
+   "lat": 18.789248,
+   "lng": 98.99299,
+   "radius_m": 150,
+   "code": "266QT"
+  },
+  {
+   "id": "cm-osm-way-650706596",
+   "th": "วัดอู่ทรายคำ",
+   "en": "Wat Ou Sai Kham",
+   "lat": 18.789524,
+   "lng": 98.994625,
+   "radius_m": 150,
+   "code": "H2S09"
+  },
+  {
+   "id": "cm-osm-way-308548477",
+   "th": "วัดเชตวัน",
+   "en": "Wat Cheatawan",
+   "lat": 18.788549,
+   "lng": 98.995695,
+   "radius_m": 150,
+   "code": "1QJ8H"
+  },
+  {
+   "id": "cm-osm-way-352321202",
+   "th": "วัดมหาวัน",
+   "en": "Wat Mahawan",
+   "lat": 18.787718,
+   "lng": 98.995523,
+   "radius_m": 150,
+   "code": "RJM2N"
+  },
+  {
+   "id": "cm-osm-way-360706201",
+   "th": "วัดพันตอง",
+   "en": "Wat Phan Tong",
+   "lat": 18.784718,
+   "lng": 98.996036,
+   "radius_m": 150,
+   "code": "2X8HY"
+  },
+  {
+   "id": "cm-osm-way-360706203",
+   "th": "วัดลอยเคราะห์",
+   "en": "Wat Loi Kroh",
+   "lat": 18.784719,
+   "lng": 98.996856,
+   "radius_m": 150,
+   "code": "TB01H"
+  },
+  {
+   "id": "cm-osm-way-261336735",
+   "th": "วัดบุพพาราม",
+   "en": "Wat Bupparam",
+   "lat": 18.787907,
+   "lng": 98.998156,
+   "radius_m": 150,
+   "code": "7H659"
+  },
+  {
+   "id": "cm-osm-way-692146706",
+   "th": "วัดหนองคำ",
+   "en": "วัดหนองคำ",
+   "lat": 18.790362,
+   "lng": 98.996492,
+   "radius_m": 150,
+   "code": "0EW8Q"
+  },
+  {
+   "id": "cm-osm-way-135952568",
+   "th": "วัดชมพู",
+   "en": "Wat Chomphu",
+   "lat": 18.791206,
+   "lng": 98.99455,
+   "radius_m": 150,
+   "code": "N34VF"
+  },
+  {
+   "id": "cm-osm-way-242930163",
+   "th": "วัดชัยพระเกียรติ",
+   "en": "Wat Chai Phrakiat",
+   "lat": 18.788755,
+   "lng": 98.985891,
+   "radius_m": 150,
+   "code": "8P10B"
+  },
+  {
+   "id": "cm-osm-way-691923149",
+   "th": "วัดอินทขีลสะดือเมือง",
+   "en": "Wat Inthakhin Sadue Muang",
+   "lat": 18.789528,
+   "lng": 98.987024,
+   "radius_m": 150,
+   "code": "KKA8D"
+  },
+  {
+   "id": "cm-osm-way-243018795",
+   "th": "วัดเจดีย์หลวงวรวิหาร",
+   "en": "Wat Chedi Luang",
+   "lat": 18.786973,
+   "lng": 98.986857,
+   "radius_m": 150,
+   "code": "2V22Q"
+  },
+  {
+   "id": "cm-osm-way-691917810",
+   "th": "วัดพระเจ้าเม็งราย",
+   "en": "Wat Phra Chao Meng Rai",
+   "lat": 18.7851,
+   "lng": 98.984152,
+   "radius_m": 150,
+   "code": "2Y8Y3"
+  },
+  {
+   "id": "cm-osm-way-242929545",
+   "th": "วัดศรีเกิด",
+   "en": "Wat Si Koet",
+   "lat": 18.788009,
+   "lng": 98.983881,
+   "radius_m": 150,
+   "code": "WZBCE"
+  },
+  {
+   "id": "cm-osm-way-93414647",
+   "th": "Wat Phra Singh",
+   "en": "Wat Phra Singh",
+   "lat": 18.788585,
+   "lng": 98.981382,
+   "radius_m": 150,
+   "code": "P3H2P"
+  },
+  {
+   "id": "cm-osm-way-378271848",
+   "th": "วัดปราสาท",
+   "en": "Wat Prasat",
+   "lat": 18.78981,
+   "lng": 98.981023,
+   "radius_m": 150,
+   "code": "WVCMD"
+  },
+  {
+   "id": "cm-osm-way-242929434",
+   "th": "วัดผาบ่อง",
+   "en": "Wat Pha Bong",
+   "lat": 18.789756,
+   "lng": 98.982064,
+   "radius_m": 150,
+   "code": "3XYAH"
+  },
+  {
+   "id": "cm-osm-way-242929634",
+   "th": "วัดทุงยู",
+   "en": "Wat Tung Yu",
+   "lat": 18.788802,
+   "lng": 98.984124,
+   "radius_m": 150,
+   "code": "WZC2D"
+  },
+  {
+   "id": "cm-osm-way-297359944",
+   "th": "วัดเจ็ดลิน",
+   "en": "Wat Chet Lin - Wat Jedlin",
+   "lat": 18.783812,
+   "lng": 98.987883,
+   "radius_m": 150,
+   "code": "J5ESS"
+  },
+  {
+   "id": "cm-osm-way-361100236",
+   "th": "วัดหมื่นตุม",
+   "en": "Wat Muentoom",
+   "lat": 18.784139,
+   "lng": 98.989099,
+   "radius_m": 150,
+   "code": "MCGGX"
+  },
+  {
+   "id": "cm-osm-way-244650927",
+   "th": "วัดทรายมูลเมือง",
+   "en": "Wat Saimoonmuang",
+   "lat": 18.782625,
+   "lng": 98.992431,
+   "radius_m": 150,
+   "code": "9FPFH"
+  },
+  {
+   "id": "cm-osm-way-356757957",
+   "th": "วัดพวกช้าง",
+   "en": "Wat Puak Chang",
+   "lat": 18.780663,
+   "lng": 98.993397,
+   "radius_m": 150,
+   "code": "ZBBJT"
+  },
+  {
+   "id": "cm-osm-way-294470220",
+   "th": "วัดเมืองมาง",
+   "en": "Wat Mueang Mang",
+   "lat": 18.780204,
+   "lng": 98.991368,
+   "radius_m": 150,
+   "code": "SW3H5"
+  },
+  {
+   "id": "cm-osm-way-106083741",
+   "th": "วัดดาวดึงส์",
+   "en": "Wat Dao Dueng",
+   "lat": 18.778473,
+   "lng": 98.991419,
+   "radius_m": 150,
+   "code": "JF103"
+  },
+  {
+   "id": "cm-osm-way-244650874",
+   "th": "วัดทรายมูล (พม่า)",
+   "en": "Wat Sai Moon Myanmar",
+   "lat": 18.782162,
+   "lng": 98.991232,
+   "radius_m": 150,
+   "code": "S0NAH"
+  },
+  {
+   "id": "cm-osm-way-320601922",
+   "th": "วัดฟ่อนสร้อย",
+   "en": "Wat Fon Soi",
+   "lat": 18.782723,
+   "lng": 98.988481,
+   "radius_m": 150,
+   "code": "9V9W5"
+  },
+  {
+   "id": "cm-osm-way-691949313",
+   "th": "วัดพันแหวน",
+   "en": "Wat Pan Whaen",
+   "lat": 18.783073,
+   "lng": 98.985749,
+   "radius_m": 150,
+   "code": "90M99"
+  },
+  {
+   "id": "cm-osm-way-251437025",
+   "th": "วัดแสนเมืองมาหลวง",
+   "en": "Wat Saen Mueang Ma Luang",
+   "lat": 18.794009,
+   "lng": 98.986356,
+   "radius_m": 150,
+   "code": "4KFQS"
+  },
+  {
+   "id": "cm-osm-way-251360257",
+   "th": "วัดหม้อคำตวง",
+   "en": "Wat Mo Kham Tuang",
+   "lat": 18.795012,
+   "lng": 98.985358,
+   "radius_m": 150,
+   "code": "WHS5C"
+  },
+  {
+   "id": "cm-osm-way-578867504",
+   "th": "วัดควรค่าม้า",
+   "en": "Wat Khuan Kama",
+   "lat": 18.795171,
+   "lng": 98.98371,
+   "radius_m": 150,
+   "code": "PFRDC"
+  },
+  {
+   "id": "cm-osm-way-301483293",
+   "th": "วัดราชมณเทียร",
+   "en": "Wat Rachamontian",
+   "lat": 18.795118,
+   "lng": 98.98271,
+   "radius_m": 150,
+   "code": "MDC2M"
+  },
+  {
+   "id": "cm-osm-way-692137164",
+   "th": "วัดโลกโมฬี",
+   "en": "Wat Lok Molee",
+   "lat": 18.796415,
+   "lng": 98.982569,
+   "radius_m": 150,
+   "code": "Y5AHD"
+  },
+  {
+   "id": "cm-osm-way-406992814",
+   "th": "วัดป่าพร้าวใน",
+   "en": "Wat Pa Phrao Nai",
+   "lat": 18.793288,
+   "lng": 98.980598,
+   "radius_m": 150,
+   "code": "GXP33"
+  },
+  {
+   "id": "cm-osm-way-406992974",
+   "th": "วัดดับภัย",
+   "en": "Wat Dubphai",
+   "lat": 18.792828,
+   "lng": 98.98149,
+   "radius_m": 150,
+   "code": "PM9XX"
+  },
+  {
+   "id": "cm-osm-way-98070869",
+   "th": "วัดเชียงมั่น",
+   "en": "Wat Chiang Man",
+   "lat": 18.793786,
+   "lng": 98.989393,
+   "radius_m": 150,
+   "code": "F0JM8"
+  },
+  {
+   "id": "cm-osm-node-1445519685",
+   "th": "วัดเชียงยืน",
+   "en": "Wat Chiang Yuen",
+   "lat": 18.796325,
+   "lng": 98.98878,
+   "radius_m": 150,
+   "code": "TY8M4"
+  },
+  {
+   "id": "cm-osm-way-423031752",
+   "th": "วัดพวกแต้ม",
+   "en": "Wat Phuak Taem",
+   "lat": 18.782435,
+   "lng": 98.983075,
+   "radius_m": 150,
+   "code": "78S7Y"
+  },
+  {
+   "id": "cm-osm-relation-8201931",
+   "th": "วัดพวกหงษ์",
+   "en": "Wat Phuak Hong",
+   "lat": 18.783021,
+   "lng": 98.980944,
+   "radius_m": 150,
+   "code": "2NZ1F"
+  },
+  {
+   "id": "cm-osm-way-692682522",
+   "th": "วัดพวกเปีย",
+   "en": "Wat Puak Pia",
+   "lat": 18.779374,
+   "lng": 98.980702,
+   "radius_m": 150,
+   "code": "ZFZK9"
+  },
+  {
+   "id": "cm-osm-way-309886989",
+   "th": "วัดศรีสุพรรณ",
+   "en": "Wat Sri Suphan",
+   "lat": 18.778648,
+   "lng": 98.983349,
+   "radius_m": 150,
+   "code": "BZ54T"
+  },
+  {
+   "id": "cm-osm-way-307423269",
+   "th": "วัดหมื่นสาร",
+   "en": "Wat Muen San",
+   "lat": 18.777012,
+   "lng": 98.984596,
+   "radius_m": 150,
+   "code": "QBJTK"
+  },
+  {
+   "id": "cm-osm-way-467444127",
+   "th": "วัดนันทาราม",
+   "en": "Wat Nantaram",
+   "lat": 18.774677,
+   "lng": 98.986377,
+   "radius_m": 150,
+   "code": "YNQ4N"
+  },
+  {
+   "id": "cm-osm-way-668806316",
+   "th": "วัดยางกวง",
+   "en": "Wat Yang Kuang",
+   "lat": 18.775809,
+   "lng": 98.989084,
+   "radius_m": 150,
+   "code": "5569D"
+  },
+  {
+   "id": "cm-osm-way-256126140",
+   "th": "วัดธาตุกลาง",
+   "en": "วัดธาตุกลาง",
+   "lat": 18.776733,
+   "lng": 98.989233,
+   "radius_m": 150,
+   "code": "J2GVH"
+  },
+  {
+   "id": "cm-osm-way-256126141",
+   "th": "วัดธาตุคำ",
+   "en": "Wat Thatkam",
+   "lat": 18.777533,
+   "lng": 98.98861,
+   "radius_m": 150,
+   "code": "ZMVCD"
+  },
+  {
+   "id": "cm-osm-way-360854715",
+   "th": "วัดช่างฆ้อง",
+   "en": "Wat Chang Kong",
+   "lat": 18.784957,
+   "lng": 98.998118,
+   "radius_m": 150,
+   "code": "PHVXN"
+  },
+  {
+   "id": "cm-osm-way-220980844",
+   "th": "วัดศรีดอนไชย",
+   "en": "Wat Sri Dornchai",
+   "lat": 18.781513,
+   "lng": 99.00046,
+   "radius_m": 150,
+   "code": "41WCJ"
+  },
+  {
+   "id": "cm-osm-way-406558246",
+   "th": "วัดชัยมงคล",
+   "en": "Wat Chaimongkol",
+   "lat": 18.78067,
+   "lng": 99.004624,
+   "radius_m": 150,
+   "code": "5RQ9M"
+  },
+  {
+   "id": "cm-osm-way-352224619",
+   "th": "วัดท่าสะต๋อย",
+   "en": "Wat Tha Sa Toi",
+   "lat": 18.782667,
+   "lng": 99.007379,
+   "radius_m": 150,
+   "code": "GZQK1"
+  },
+  {
+   "id": "cm-osm-way-251579204",
+   "th": "วัดสันป่าข่อย",
+   "en": "Wat San Pa Khoi",
+   "lat": 18.786209,
+   "lng": 99.008129,
+   "radius_m": 150,
+   "code": "XS08M"
+  },
+  {
+   "id": "cm-osm-way-495778859",
+   "th": "วัดอุปคุต",
+   "en": "Wat Up Khut",
+   "lat": 18.78738,
+   "lng": 99.00131,
+   "radius_m": 150,
+   "code": "7KKFH"
+  },
+  {
+   "id": "cm-osm-way-528019093",
+   "th": "วัดเกตการาม",
+   "en": "Wat Ket Karam",
+   "lat": 18.792474,
+   "lng": 99.002695,
+   "radius_m": 150,
+   "code": "EACS5"
+  },
+  {
+   "id": "cm-osm-way-692686707",
+   "th": "วัดศรีโขง",
+   "en": "Wat Tha Srikhong",
+   "lat": 18.795919,
+   "lng": 99.001154,
+   "radius_m": 150,
+   "code": "KQ4HB"
+  },
+  {
+   "id": "cm-osm-way-308548856",
+   "th": "วัดแสนฝาง",
+   "en": "Wat Saen Fang",
+   "lat": 18.789096,
+   "lng": 98.998766,
+   "radius_m": 150,
+   "code": "4GJA0"
+  },
+  {
+   "id": "cm-osm-relation-8651541",
+   "th": "วัดช่างแต้ม",
+   "en": "Wat Chang Taem",
+   "lat": 18.7852,
+   "lng": 98.988062,
+   "radius_m": 150,
+   "code": "328T3"
+  },
+  {
+   "id": "cm-osm-way-238829914",
+   "th": "วัดหมื่นเงินกอง",
+   "en": "Wat Muen Ngun Gong",
+   "lat": 18.78535,
+   "lng": 98.980899,
+   "radius_m": 150,
+   "code": "XCW2T"
+  },
+  {
+   "id": "cm-osm-way-692140717",
+   "th": "วัดปันเส่า",
+   "en": "วัดปันเส่า",
+   "lat": 18.792192,
+   "lng": 98.977391,
+   "radius_m": 150,
+   "code": "YCEZQ"
+  },
+  {
+   "id": "cm-osm-way-692137169",
+   "th": "วัดสันติธรรม",
+   "en": "Wat Santi Tham",
+   "lat": 18.799729,
+   "lng": 98.979654,
+   "radius_m": 150,
+   "code": "T55WJ"
+  },
+  {
+   "id": "cm-osm-way-665826690",
+   "th": "วัดกู่เต้า",
+   "en": "Wat Ku Tao",
+   "lat": 18.802565,
+   "lng": 98.988636,
+   "radius_m": 150,
+   "code": "P3ERT"
+  },
+  {
+   "id": "cm-osm-relation-18882121",
+   "th": "วัดป่าแพ่ง",
+   "en": "Wat Pa Phaeng",
+   "lat": 18.801669,
+   "lng": 98.998982,
+   "radius_m": 150,
+   "code": "3GMZR"
+  },
+  {
+   "id": "cm-osm-way-377819719",
+   "th": "วัดชัยศรีภูมิ",
+   "en": "Wat Chai Sri Phoon",
+   "lat": 18.794368,
+   "lng": 98.994159,
+   "radius_m": 150,
+   "code": "6SBHC"
+  },
+  {
+   "id": "cm-osm-node-1445519696",
+   "th": "วัดป่าเป้า",
+   "en": "Wat Pa Pao",
+   "lat": 18.796004,
+   "lng": 98.992357,
+   "radius_m": 150,
+   "code": "DVV5B"
+  },
+  {
+   "id": "cm-osm-way-265150050",
+   "th": "วัดล่ามช้าง",
+   "en": "Wat Lam Chang",
+   "lat": 18.793059,
+   "lng": 98.990519,
+   "radius_m": 150,
+   "code": "2AW67"
+  }
+ ]
+}

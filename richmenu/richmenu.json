@@ -1,0 +1,95 @@
+{
+  "size": {
+    "width": 2500,
+    "height": 1686
+  },
+  "selected": false,
+  "name": "motdang-dm-2026-09-28b",
+  "chatBarText": "เมนู · Menu",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "label": "ฝนตกไหม · Raining?",
+        "data": "a=rain",
+        "displayText": "ฝนตกไหม · Raining?"
+      }
+    },
+    {
+      "bounds": {
+        "x": 833,
+        "y": 0,
+        "width": 834,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "label": "น้ำท่วม · Flood",
+        "data": "a=flood",
+        "displayText": "น้ำท่วม · Flood"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1667,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "label": "ใกล้ฉัน · Near me",
+        "data": "a=near",
+        "displayText": "ใกล้ฉัน · Near me"
+      }
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 843,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "label": "ปลอดภัย · Safe",
+        "data": "a=safe",
+        "displayText": "ปลอดภัย · Safe"
+      }
+    },
+    {
+      "bounds": {
+        "x": 833,
+        "y": 843,
+        "width": 834,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "label": "พาสปอร์ต · Passport",
+        "data": "a=passport",
+        "displayText": "พาสปอร์ต · Passport"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1667,
+        "y": 843,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "label": "หน้าของฉัน · My page",
+        "data": "a=page",
+        "displayText": "หน้าของฉัน · My page"
+      }
+    }
+  ]
+}

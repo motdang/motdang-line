@@ -1,0 +1,49 @@
+RICH MENU IMAGE — draft, not uploaded
+Goes with richmenu.json in this folder. Drafted 2026-09-28; six buttons since
+the LINE door build the same day.
+
+FILE
+  2500 x 1686 pixels, PNG or JPEG, under 1 MB.
+  Two rows of three panels. Columns 833, 834 and 833 wide; rows 843 high.
+  The tap areas in richmenu.json match these panels exactly.
+
+LOOK
+  Bright: background #fffdf6, ink #1d1b16, accent #d62828 (the page colours).
+  A 4 px #eee6d4 rule between panels.
+  Thai on top, large (about 120 px, bold). English under it (about 80 px).
+  One simple line drawing per panel above the words, in the accent colour,
+  about 220 px tall. Drawings, not emoji.
+
+PANELS
+  top row, left to right
+  1  ฝนตกไหม      Raining?    a cloud with three slanted rain strokes
+  2  น้ำท่วม        Flood       three wavy lines, a short post marked at knee height
+  3  ใกล้ฉัน        Near me     a map pin
+  bottom row, left to right
+  4  ปลอดภัย       Safe        a house outline with a tick inside
+  5  พาสปอร์ต     Passport    a small booklet with a round stamp on its cover
+  6  หน้าของฉัน    My page     a page outline with a small photo square on it
+
+WHAT EACH BUTTON DOES (src/pages.js), and the var it needs
+  1  a=rain      PAGES or SPOTTERS  asks none / light / heavy, then forwards to
+                                    mot-dang-claims /rain with the last shared
+                                    location, or asks for a location first
+  2  a=flood     PAGES or SPOTTERS  dry / ankle / knee / waist / chest / roof, same path
+  3  a=near      ASK                nearest pharmacy, fuel, toilet, hospital,
+                                    7-Eleven; with ASK off and PAGES on, a link
+                                    to motdang.net/here.html
+  4  a=safe      SAFE               two buttons: safe, or need help
+  5  a=passport  STAMPS             the Mae Hong Son loop or the nine wats
+  6  a=page      PAGES              the sender's page link
+  A button whose var is off gets no answer.
+
+LEFT OUT, for want of room
+  Pins (หมุด) arrive from the map's "Keep in LINE" button, and "home" and
+  "owner" are sent from the site, so none of them needs a panel.
+
+TO PUT IT LIVE (not done; each step changes the live account)
+  1  POST https://api.line.me/v2/bot/richmenu            body: richmenu.json
+  2  POST https://api-data.line.me/v2/bot/richmenu/<id>/content   the image
+  3  POST https://api.line.me/v2/bot/user/all/richmenu/<id>       default for everyone
+  OA Manager -> Rich menus builds menus by hand but offers link and text
+  actions, not postbacks, so this one goes through the API.

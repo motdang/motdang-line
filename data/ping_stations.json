@@ -1,0 +1,65 @@
+{
+ "source": "weather-north/data/samples/tw_waterlevel_load.json (thaiwater.net), matched on tele_station_oldcode to the ids in motdang.net/data/ping.json. Two names differ between the feeds (P.103, P.21); the codes match.",
+ "stations": [
+  {
+   "id": "P.20",
+   "th": "บ้านเชียงดาว",
+   "lat": 19.369551,
+   "lng": 98.969101
+  },
+  {
+   "id": "P.75",
+   "th": "บ้านช่อแล",
+   "lat": 19.14599,
+   "lng": 99.007332
+  },
+  {
+   "id": "P.67",
+   "th": "บ้านแม่แต",
+   "lat": 19.00985,
+   "lng": 98.95974
+  },
+  {
+   "id": "P.1",
+   "th": "สะพานนวรัฐ",
+   "lat": 18.786961,
+   "lng": 99.005089
+  },
+  {
+   "id": "P.103",
+   "th": "สะพานวงแหวนรอบ 3",
+   "lat": 18.86651,
+   "lng": 98.978188
+  },
+  {
+   "id": "P.4A",
+   "th": "บ้านแม่แตง",
+   "lat": 19.122181,
+   "lng": 98.944412
+  },
+  {
+   "id": "P.21",
+   "th": "บ้านริมใต้",
+   "lat": 18.92746,
+   "lng": 98.939774
+  },
+  {
+   "id": "P.71A",
+   "th": "บ้านกลาง",
+   "lat": 18.54735,
+   "lng": 98.862282
+  },
+  {
+   "id": "P.82",
+   "th": "บ้านสบวิน",
+   "lat": 18.65423,
+   "lng": 98.685661
+  },
+  {
+   "id": "P.81",
+   "th": "บ้านโป่ง",
+   "lat": 18.69521,
+   "lng": 99.078751
+  }
+ ]
+}

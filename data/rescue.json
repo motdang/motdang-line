@@ -1,0 +1,397 @@
+{
+ "source": "safety-north/rescue.json (53 units), placed from mot-dang docs/data/*.geojson by record id; 4 without a point or phone left out.",
+ "units": [
+  {
+   "th": "ศูนย์กู้ชีพ กู้ภัย เทศบาลแม่โจ้",
+   "en": "Mae Jo Municipal Rescue Centre",
+   "phone": "053-499-161",
+   "lat": 18.90328,
+   "lng": 99.00494,
+   "url": "https://motdang.net/cm/p/mae-jo-municipal-rescue-centre-cmcuratedmaejomunicipalrescue.html"
+  },
+  {
+   "th": "กู้ชีพ-กู้ภัย เทศบาลตำบลหนองแฝก",
+   "en": "Kuchip-kuphai Thetsaban Tambon Nong Faek",
+   "phone": "+66843780616",
+   "lat": 18.69461,
+   "lng": 99.02132,
+   "url": "https://motdang.net/cm/p/03136739845780571816469.html"
+  },
+  {
+   "th": "กู้ภัยหยาดฟ้ามูลนิธิไหว้สาป๋ารมีพระบรมธาตุดอยสุเทพ",
+   "en": "Kuphai Yat Fa Munnithi Wai Sapanmi Phra Brom That Doi Suthep",
+   "phone": "+66992989991",
+   "lat": 18.82228,
+   "lng": 99.01565,
+   "url": "https://motdang.net/cm/p/3461304252037390572.html"
+  },
+  {
+   "th": "ศูนย์กู้ชีพปิ่นทอง",
+   "en": "Kuchip Pinthong Centre",
+   "phone": "+6653451033",
+   "lat": 19.91456,
+   "lng": 99.15899,
+   "url": "https://motdang.net/cm/p/438424698934220543.html"
+  },
+  {
+   "th": "สมาคมกู้ภัยรวมใจต้านภัยพิบัติ เชียงใหม่ R.A.D Chiang Mai",
+   "en": null,
+   "phone": "+66855294944",
+   "lat": 18.9737,
+   "lng": 98.98267,
+   "url": "https://motdang.net/cm/p/r-a-d-chiang-mai-4860733459813499792217.html"
+  },
+  {
+   "th": "งานป้องกันและบรรเทาสาธารณภัย เทศบาลตำบลไชยสถาน",
+   "en": "Nganpongkan Lae Bronthao Sathanna Phai Thetsaban Tambon Chaisathan",
+   "phone": "+66997626365",
+   "lat": 18.73488,
+   "lng": 99.04063,
+   "url": "https://motdang.net/cm/p/578805445670607122660.html"
+  },
+  {
+   "th": "กู้ชีพ-กู้ภัย เทศบาลตำบลบ้านแปะ",
+   "en": "Kuchip-kuphai Thetsaban Tambon Ban Pae",
+   "phone": "+66931320502",
+   "lat": 18.21076,
+   "lng": 98.62028,
+   "url": "https://motdang.net/cm/p/7122879404699279.html"
+  },
+  {
+   "th": "วิทยาลัยป้องกันและบรรเทาสาธารณภัย",
+   "en": "Pongkan Lae Bronthao Sathanna Phai College",
+   "phone": "+6653222798",
+   "lat": 18.8144,
+   "lng": 98.97543,
+   "url": "https://motdang.net/cm/p/719629046949749535617.html"
+  },
+  {
+   "th": "RPT Cafeteria at Rescue Park Thailand",
+   "en": "RPT Cafeteria at Rescue Park Thailand",
+   "phone": "+66825578767",
+   "lat": 18.74695,
+   "lng": 98.98804,
+   "url": "https://motdang.net/cm/p/rpt-cafeteria-at-rescue-park-thailand-7280519056437294805680.html"
+  },
+  {
+   "th": "ศูนย์กู้ชีพเวียงพิงค์",
+   "en": "Kuchip Wiang Phing Centre",
+   "phone": "+6653999299",
+   "lat": 18.85138,
+   "lng": 98.96809,
+   "url": "https://motdang.net/cm/p/77326797405320787662.html"
+  },
+  {
+   "th": "งานป้องกันและบรรเทาสาธารณภัย เทศบาลตำบลสารภี",
+   "en": "Nganpongkan Lae Bronthao Sathanna Phai Thetsaban Tambon Saraphi",
+   "phone": "+66931355530",
+   "lat": 18.68656,
+   "lng": 99.04337,
+   "url": "https://motdang.net/cm/p/7952692434459885351630255.html"
+  },
+  {
+   "th": "สำนักงานใหญ่มูลนิธิกู้ภัยรวมใจ อปพร. เชียงใหม่",
+   "en": "Samnakngan Yai Munnithi Kuphai Ruamchai Apaphon. Chiang Mai",
+   "phone": "+6653218888",
+   "lat": 18.78988,
+   "lng": 98.98457,
+   "url": "https://motdang.net/cm/p/770857430832047735387.html"
+  },
+  {
+   "th": "ศูนย์ป้องกันและบรรเทาสาธารณภัยเทศบาลสันทรายหลวง",
+   "en": "Pongkan Lae Bronthao Sathanna Phai Thetsaban San Sai Luang Centre",
+   "phone": "+6653492991",
+   "lat": 18.84071,
+   "lng": 99.04312,
+   "url": "https://motdang.net/cm/p/8541184896229235891.html"
+  },
+  {
+   "th": "งานป้องกันและบรรเทาสาธารณภัยเทศบาลเมืองต้นเปา",
+   "en": "Nganpongkan Lae Bronthao Sathanna Phai Thetsaban Mueang Ton Pao",
+   "phone": "+66819605551",
+   "lat": 18.75952,
+   "lng": 99.07854,
+   "url": "https://motdang.net/cm/p/83388687430826871994.html"
+  },
+  {
+   "th": "ศูนย์กู้ชีพ ทต.ออนใต้",
+   "en": "Kuchip Thot.ontai Centre",
+   "phone": "+6653036042",
+   "lat": 18.73477,
+   "lng": 99.20733,
+   "url": "https://motdang.net/cm/p/911656917488150580617.html"
+  },
+  {
+   "th": "ศูนย์กู้ภัยอุทยานแห่งชาติที่ 1 จังหวัดเชียงใหม่",
+   "en": "Kuphai Utthayan Haeng Chati Thi 1 Changwat Chiang Mai Centre",
+   "phone": "+66930098388",
+   "lat": 18.74964,
+   "lng": 98.91709,
+   "url": "https://motdang.net/cm/p/1-9211647844099461727985.html"
+  },
+  {
+   "th": "ฟาร์มกบและสวนมะนาวกู้ชีพ",
+   "en": "Farm Kop Lae Suan Manao Kuchip",
+   "phone": "+66620101669",
+   "lat": 19.32271,
+   "lng": 99.20937,
+   "url": "https://motdang.net/cm/p/994518464333362276428.html"
+  },
+  {
+   "th": "ศูนย์กู้ภัยตำรวจทางหลวง จังหวัดเชียงใหม่",
+   "en": "Kuphai Tamruat Thangluang Changwat Chiang Mai Centre",
+   "phone": "+6652066474",
+   "lat": 18.7638,
+   "lng": 99.03062,
+   "url": "https://motdang.net/cm/p/97488765045519703273.html"
+  },
+  {
+   "th": "สถานีดับเพลิงและกู้ภัย",
+   "en": "Sathani Dapphloeng Lae Kuphai",
+   "phone": "+6653492991",
+   "lat": 18.84074,
+   "lng": 99.04329,
+   "url": "https://motdang.net/cm/p/9855412044380300962056.html"
+  },
+  {
+   "th": "หน่วยกู้ชีพ-กู้ภัย เทศบาลตำบลแม่คือ",
+   "en": "Nuaikuchip-kuphai Thetsaban Tambon Mae Khue",
+   "phone": "+66828923408",
+   "lat": 18.79604,
+   "lng": 99.11311,
+   "url": "https://motdang.net/cm/p/4606214844814222037.html"
+  },
+  {
+   "th": "กู้ภัยเฉพาะกิจ เชียงใหม่",
+   "en": "Kuphai Chephokit Chiang Mai",
+   "phone": "+66882526091",
+   "lat": 18.74034,
+   "lng": 99.04404,
+   "url": "https://motdang.net/cm/p/469840634023528417179365.html"
+  },
+  {
+   "th": "สมาคมเม้งลักกิ้วสุกโป่ว กู้ภัยนพรัตน์",
+   "en": "Samakma Meng Lak Kiosukpoo Kuphai Naphrat",
+   "phone": "+66902904915",
+   "lat": 18.59545,
+   "lng": 98.8894,
+   "url": "https://motdang.net/cm/p/5705244382297555305.html"
+  },
+  {
+   "th": "หน่วยกู้ชีพเวียงทอง",
+   "en": "Nuaikuchip Wiang Thong",
+   "phone": "+66959573551",
+   "lat": 18.74121,
+   "lng": 99.00416,
+   "url": "https://motdang.net/cm/p/998362455644367277238.html"
+  },
+  {
+   "th": "กู้ชีพ-กู้ภัย จามจุรี เทศบาลตำบลสันกำแพง",
+   "en": "Kuchip-kuphai Chamchuri Thetsaban Tambon San Kamphaeng",
+   "phone": "+6653331910",
+   "lat": 18.74668,
+   "lng": 99.11615,
+   "url": "https://motdang.net/cm/p/9066145972749799.html"
+  },
+  {
+   "th": "ศูนย์ กู้ชีพ-กู้ภัยทรายงาม",
+   "en": "Kuchip-kuphai Sai Ngam Centre",
+   "phone": "+66937455487",
+   "lat": 18.96016,
+   "lng": 98.91698,
+   "url": "https://motdang.net/cm/p/252453564282646240.html"
+  },
+  {
+   "th": "กู้ชีพ-กู้ภัยสบแม่ข่า",
+   "en": "Kuchip-kuphai Sopmaekha",
+   "phone": "+6653368405",
+   "lat": 18.67796,
+   "lng": 98.97704,
+   "url": "https://motdang.net/cm/p/319149146589410051916333.html"
+  },
+  {
+   "th": "Trrt ชมรมกู้ภัยทางสูงประเทศไทย",
+   "en": null,
+   "phone": "+66899568763",
+   "lat": 18.74687,
+   "lng": 98.98822,
+   "url": "https://motdang.net/cm/p/trrt-367461446963948477.html"
+  },
+  {
+   "th": "กู้ชีพหนองจ๊อมเชียงใหม่",
+   "en": "Kuchip Nongchom Chiang Mai",
+   "phone": "+66858689979",
+   "lat": 18.84035,
+   "lng": 99.02547,
+   "url": "https://motdang.net/cm/p/26324944467102391.html"
+  },
+  {
+   "th": "ศูนย์การเรียนรู้การปฐมพยาบาลฉุกเฉินและการกู้ชีพขั้นพื้นฐาน ทต.หนองผึ้ง",
+   "en": "Kanrianru Kan Pathom Phayaban Chukchoen Lae Kan Kuchip Khan Phuenthan Thot.nong Phueng Centre",
+   "phone": "+66871934466",
+   "lat": 18.69391,
+   "lng": 99.0211,
+   "url": "https://motdang.net/cm/p/72182514996254218031.html"
+  },
+  {
+   "th": "กู้ชีพทิพวัน",
+   "en": "Kuchipthipwan",
+   "phone": "+6653106953",
+   "lat": 18.94681,
+   "lng": 98.98354,
+   "url": "https://motdang.net/cm/p/011703841783103534636.html"
+  },
+  {
+   "th": "สมาคมกู้ภัยเมตตาธรรม จังหวัดเชียงใหม่",
+   "en": "Samakma Kuphai Mettatrarom Changwat Chiang Mai",
+   "phone": "+66986354666",
+   "lat": 19.0681,
+   "lng": 98.95097,
+   "url": "https://motdang.net/cm/p/0679000647298219645068393.html"
+  },
+  {
+   "th": "สำนักงานใหญ่ กู้ภัยสันกำแพง",
+   "en": "Samnakngan Yai Kuphai San Kamphaeng",
+   "phone": "+6652005253",
+   "lat": 18.76447,
+   "lng": 99.08927,
+   "url": "https://motdang.net/cm/p/015219770479576482560.html"
+  },
+  {
+   "th": "สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดเชียงใหม่",
+   "en": "Samnak Nganpongkan Lae Bronthao Sathanna Phai Changwat Chiang Mai",
+   "phone": "+6653213551",
+   "lat": 18.81357,
+   "lng": 98.97643,
+   "url": "https://motdang.net/cm/p/8496799154562975210009.html"
+  },
+  {
+   "th": "สำนักงาน ป้องกันและบรรเทาสาธารณภัยจังหวัดเชียงใหม่",
+   "en": "Samnakngan Pongkan Lae Bronthao Sathanna Phai Changwat Chiang Mai",
+   "phone": "+6653213551",
+   "lat": 18.81276,
+   "lng": 98.98124,
+   "url": "https://motdang.net/cm/p/023198841934768583.html"
+  },
+  {
+   "th": "ศูนย์ป้องกันและบรรเทาสาธารณภัยเขต 15 เชียงราย (ปภ.)",
+   "en": "Chiang Rai Disaster Prevention and Mitigation Center Area 15 (DPMCR15)",
+   "phone": "+66536027589",
+   "lat": 19.90918,
+   "lng": 99.82245,
+   "url": "https://motdang.net/cr/p/chiang-rai-disaster-prevention-and-mitigation-center-area-15-963893765.html"
+  },
+  {
+   "th": "กู้ภัยแสงแก้วโพธิญาณ ในอุปถัมภ์ครูบาอริยชาติ อริยจิตฺโต",
+   "en": "Kuphai Saeng Kaeo Phothiyan Nai Upatham Khru Baarii Chati Ariichitto",
+   "phone": "+6653602789",
+   "lat": 19.60241,
+   "lng": 99.52396,
+   "url": "https://motdang.net/cr/p/00084304722362226272.html"
+  },
+  {
+   "th": "สมาคมกู้ชีพเจริญเมือง",
+   "en": "Samakma Kuchip Charoen Mueang",
+   "phone": "+66969949429",
+   "lat": 19.60354,
+   "lng": 99.76167,
+   "url": "https://motdang.net/cr/p/1200089480917055398.html"
+  },
+  {
+   "th": "สมาคมกู้ภัยเทิง - หน่วยกู้ชีพนครเทิง",
+   "en": "Samakma Kuphai Thoeng - Nuaikuchip Nakhon Thoeng",
+   "phone": "+66630231669",
+   "lat": 19.69057,
+   "lng": 100.19753,
+   "url": "https://motdang.net/cr/p/2216296441980897100925728.html"
+  },
+  {
+   "th": "สมาคมกู้ชีพธรรมนันท์",
+   "en": "Samakma Kuchip Tham Nan",
+   "phone": "+66639491669",
+   "lat": 19.68885,
+   "lng": 99.92928,
+   "url": "https://motdang.net/cr/p/3745571427863505849.html"
+  },
+  {
+   "th": "งานป้องกันและบรรเทาสาธารณภัย กู้ชีพ-กู้ภัย เทศบาลตำบลเชียงเคี่ยน",
+   "en": "Nganpongkan Lae Bronthao Sathanna Phai Kuchip-kuphai Thetsaban Tambon Chiangkhian",
+   "phone": "+66830234339",
+   "lat": 19.59854,
+   "lng": 99.96377,
+   "url": "https://motdang.net/cr/p/39924100348928488.html"
+  },
+  {
+   "th": "กู้ภัย มูลนิธิพระครูพิทักษ์พรหมวิหาร",
+   "en": "Kuphai Munnithi Phra Khru Phithak Phonmawihan",
+   "phone": "+6653733422",
+   "lat": 20.41716,
+   "lng": 99.88445,
+   "url": "https://motdang.net/cr/p/733180693542201184520.html"
+  },
+  {
+   "th": "สมาคมกู้ภัยพาน",
+   "en": "Samakma Kuphai Phan",
+   "phone": "+66947278464",
+   "lat": 19.55124,
+   "lng": 99.74637,
+   "url": "https://motdang.net/cr/p/80398454866221.html"
+  },
+  {
+   "th": "กู้ชีพเทศบาลตำบลนางแล จังหวัดเชียงราย",
+   "en": "Kuchip Thetsaban Tambon Nanglae Changwat Chiang Rai",
+   "phone": "+66922553244",
+   "lat": 20.0158,
+   "lng": 99.86951,
+   "url": "https://motdang.net/cr/p/84388504537997267732.html"
+  },
+  {
+   "th": "งานป้องกันและบรรเทาสาธารณภัย องค์การบริหารส่วนตำบลสันกลาง",
+   "en": "Nganpongkan Lae Bronthao Sathanna Phai Ong Kanbrihan Suan Tambon San Klang",
+   "phone": "+6653770014",
+   "lat": 19.58845,
+   "lng": 99.70388,
+   "url": "https://motdang.net/cr/p/8436614718747002.html"
+  },
+  {
+   "th": "สมาคมกู้ภัยอัมรินทร์ใต้",
+   "en": "Samakma Kuphai Amrin Tai",
+   "phone": "+6653602919",
+   "lat": 19.22686,
+   "lng": 99.51553,
+   "url": "https://motdang.net/cr/p/72735366430065422432.html"
+  },
+  {
+   "th": "ศูนย์ป้องกันและบรรเทาสาธารณภัย เขต 15 เชียงราย",
+   "en": "Pongkan Lae Bronthao Sathanna Phai Khet 15 Chiang Rai Centre",
+   "phone": "+6653602758",
+   "lat": 19.96076,
+   "lng": 99.84155,
+   "url": "https://motdang.net/cr/p/15-81855064195397110.html"
+  },
+  {
+   "th": "กู้ชีพ-กู้ภัย มูลนิธิสยามเชียงราย จุดตำบลแม่เงิน",
+   "en": "Kuchip-kuphai Munnithi Sayam Chiang Rai Chut Tambon Mae Ngoen",
+   "phone": "+66925403024",
+   "lat": 20.30147,
+   "lng": 100.22795,
+   "url": "https://motdang.net/cr/p/36934941172753114.html"
+  },
+  {
+   "th": "ศูนย์ป้องกันและบรรเทาสาธารณภัยเทศบาลตำบลสันทรายงาม",
+   "en": "Pongkan Lae Bronthao Sathanna Phai Thetsaban Tambon San Sai Ngam Centre",
+   "phone": "+6653188059",
+   "lat": 19.72768,
+   "lng": 100.18172,
+   "url": "https://motdang.net/cr/p/14560429301444143.html"
+  },
+  {
+   "th": "งานป้องกันและบรรเทาสาธารณภัย ตำบลแม่เย็น",
+   "en": "Nganpongkan Lae Bronthao Sathanna Phai Tambon Mae Yen",
+   "phone": "+6653957070",
+   "lat": 19.56007,
+   "lng": 99.72597,
+   "url": "https://motdang.net/cr/p/619162164771113657039193.html"
+  }
+ ]
+}

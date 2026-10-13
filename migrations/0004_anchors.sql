@@ -1,0 +1,16 @@
+-- Every sign standing in the frame, not only the one the photo is of, as a
+-- JSON list of {text, role, kind}: role "subject" for the place being
+-- photographed, "neighbour" for anything else legible — next door, across the
+-- street, in the background.
+--
+-- This column exists because LINE strips EXIF from a photo send and no amount
+-- of asking people to attach files instead is a fix. A shopfront is never
+-- photographed alone, so the neighbours ARE the coordinates: "Pharma Choice"
+-- is 19 branches and cannot be placed, but Pharma Choice standing beside
+-- Johns Place, a rooftop bar and Sleep Mai is one block on ถนนมูลเมือง.
+-- importers/resolve_frame.py in the mot-dang repo does the resolving and
+-- refuses unless two neighbours agree; this column is what feeds it.
+--
+-- A reading, like `sign`. It travels to the desk as a candidate and never
+-- becomes a record's pin on its own.
+ALTER TABLE events ADD COLUMN anchors TEXT;

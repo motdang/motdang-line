@@ -1,0 +1,111 @@
+TURNING THE LINE BOT ON — six steps, all of them yours
+Built 2026-09-07.  The Worker is deployed and waiting; it cannot listen until
+LINE has a webhook address and the Worker has LINE's two secrets.
+
+Webhook address to paste:   https://line.motdang.net/line/webhook
+
+Everything below happens in two consoles: LINE OA Manager (manager.line.biz),
+which is the account, and LINE Developers (developers.line.biz), which is the
+Messaging API channel behind it. The account is @964yxgnk — the same Mot Dang
+Official Account the site's contribute links already point at.
+
+
+1.  TURN ON THE MESSAGING API
+    OA Manager -> Settings -> Messaging API -> Enable.
+    It asks for a provider; any of yours will do. This creates the channel that
+    the Developers console then shows you.
+
+2.  POINT IT AT THE WORKER
+    Developers console -> that channel -> Messaging API tab.
+    Webhook URL:  https://line.motdang.net/line/webhook
+    Turn "Use webhook" on, then press Verify.
+
+    Verify should come back Success. If it says anything else, stop at this
+    step and tell me what it said — everything after this depends on it.
+
+3.  COPY THE TWO SECRETS
+    Basic settings tab   -> Channel secret
+    Messaging API tab    -> Channel access token (long-lived) -> Issue
+
+    The token can send messages as the account, so it never goes in a repo and
+    I never handle it. Put both in your keys file:
+
+      open ~/.config/nanobotco/keys.json
+
+    and add, alongside the other entries:
+
+      "line": { "channel_secret": "...", "channel_token": "..." }
+
+    then:
+
+      cd "/Users/annikapeacock/Desktop/claude code projects/motdang-line"
+      ./deploy.sh
+
+    It picks both up and sets them on the Worker. Nothing else changes.
+
+4.  LET IT INTO GROUP CHATS
+    OA Manager -> Settings -> Account settings.
+    Allow the account to join group chats and multi-person chats.
+
+    While you are there, look at Response settings. Your readers' one-to-one
+    messages are answered by whatever is set there now, and the bot does not
+    touch them — it ignores every one-to-one message on purpose, so nobody
+    writing to Mot Dang gets two answers.
+
+5.  INVITE IT TO THE TEAM GROUP
+    Add @964yxgnk to the Mot Dang group the way you would add a person.
+
+    The first group it is added to becomes the team group and the only one it
+    ever works in. It says hello with what it does. If it ends up in the wrong
+    group first, tell me and I will clear the one line that remembers it.
+
+6.  CHECK IT, IN THE CHAT
+    Type:  status
+    It should answer with what it is holding — zero of everything, on day one.
+    Then send a photo and say a place name. It should either say what it filed
+    the photo under, or ask which place.
+
+
+WHAT TO TELL MICHAEL AND BEER
+
+It keeps what is sent in that group: photos, and any message starting with
+"bug". It cannot see anything sent before it joined, it cannot see the album
+or Keep, and photos have to come into the chat itself to be caught.
+
+  send a photo, and say the place            it files the picture under that place
+  it cannot tell which place                 it asks, and offers up to three numbers
+  answer with 1, a name, or a motdang.net link
+  "none"                                     it leaves that one for a person
+  "bug the toilets page shows 0 in Hang Dong"  it answers with BUG-0001 and keeps it
+  "status"                                   what it is holding
+  "help"                                     the list above
+
+Once a day at 20:00 it posts a short summary — filed, waiting, bugs — and says
+nothing at all on a day when nothing happened.
+
+
+WHERE THINGS LAND
+
+Every hour, a scheduled task brings them down to both places you asked for:
+
+  the repo    ~/Desktop/claude code projects/mot-dang/_incoming/line/
+              photos/<date>/<place>/... , or photos/<date>/_unfiled/...
+              each photo with a .json beside it: who sent it, when, what they
+              said, how sure the bot was
+              BUGS.txt — the reports, numbered
+
+  Drive       "Mot Dang — photos from LINE"
+              https://drive.google.com/drive/folders/1BfHdRJdGlNG8XHscHIAdi4InN2eRSoe6
+              I made it; it is NOT shared with anyone yet. Sharing it is yours.
+
+
+TWO THINGS I COULD NOT DO FOR YOU
+
+Michael's bug reports already in the chat are not reachable — no LINE bot can
+read a message sent before it joined. You said not to worry about them, so I
+have not built anything to import them; if you change your mind, the LINE app
+can export a chat as a .txt file and I can parse that.
+
+I could not find a Mot Dang folder in your Drive, so "our shared files" may
+mean somewhere I have not seen. Name it and I will re-point the upload — it is
+one line in the hourly task.

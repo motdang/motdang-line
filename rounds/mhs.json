@@ -1,0 +1,66 @@
+{
+ "id": "mhs",
+ "need": 7,
+ "th": "พาสปอร์ตวงรอบแม่ฮ่องสอน",
+ "en": "Mae Hong Son Loop passport",
+ "link": "https://motdang.net/loop/",
+ "source": "mhs-loop/data/passport_stops.json (updated 2026-09-28), in its own order. Points are town-precision, so the radius is 1,500 m.",
+ "stops": [
+  {
+   "id": "chiang-mai",
+   "th": "เชียงใหม่",
+   "en": "Chiang Mai",
+   "lat": 18.7883,
+   "lng": 98.9853,
+   "radius_m": 1500
+  },
+  {
+   "id": "pai",
+   "th": "ปาย",
+   "en": "Pai",
+   "lat": 19.3592,
+   "lng": 98.4407,
+   "radius_m": 1500
+  },
+  {
+   "id": "soppong",
+   "th": "สบป่อง",
+   "en": "Soppong",
+   "lat": 19.4906,
+   "lng": 98.2694,
+   "radius_m": 1500
+  },
+  {
+   "id": "mae-hong-son",
+   "th": "แม่ฮ่องสอน",
+   "en": "Mae Hong Son",
+   "lat": 19.302,
+   "lng": 97.9654,
+   "radius_m": 1500
+  },
+  {
+   "id": "khun-yuam",
+   "th": "ขุนยวม",
+   "en": "Khun Yuam",
+   "lat": 18.8228,
+   "lng": 97.9336,
+   "radius_m": 1500
+  },
+  {
+   "id": "mae-sariang",
+   "th": "แม่สะเรียง",
+   "en": "Mae Sariang",
+   "lat": 18.1614,
+   "lng": 97.9308,
+   "radius_m": 1500
+  },
+  {
+   "id": "hot",
+   "th": "ฮอด",
+   "en": "Hot",
+   "lat": 18.1447,
+   "lng": 98.5847,
+   "radius_m": 1500
+  }
+ ]
+}
