@@ -175,10 +175,14 @@ export async function pushAgenda(env, to, text) {
 // So, like pushAgenda, this is its own door with its own variable: ALERTS
 // "off" stops it, and push() above stays refused under SPEAK "off". The
 // spacing, the monthly cap and the log live in src/alerts.js.
+// ALERTS "on" also opens the one-to-one chat (dm.js, directOn); SITE_ALERTS "on"
+// sends alerts for places set on motdang.net (src/site.js) and leaves the chat alone.
+export const alertsOn = (env) => ["ALERTS", "SITE_ALERTS"].some((k) => String(env[k] ?? "").toLowerCase() === "on");
+
 export async function pushAlert(env, to, text) {
   if (!to || !text) return false;
-  if (String(env.ALERTS ?? "").toLowerCase() !== "on") {
-    console.log("alert held (ALERTS not on):", String(text).slice(0, 200));
+  if (!alertsOn(env)) {
+    console.log("alert held (ALERTS and SITE_ALERTS not on):", String(text).slice(0, 200));
     return false;
   }
   const r = await fetch(API + "/message/push", {

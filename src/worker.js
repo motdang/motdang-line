@@ -25,6 +25,7 @@ import { serveSafe } from "./safe.js";
 import { spotters } from "./weather.js";
 import { deskOwners, ownerEdits } from "./owners.js";
 import { runAlerts, ALERT_CRON } from "./alerts.js";
+import { runReminders } from "./site.js";
 import { ADDRESS, BOTS_CALL, readsAsAddress, readsAsBotsCall } from "./address.js";
 import { onGbd, gbdGroups, ledgerTsv, runGbdPosts, GBD_CRON } from "./gbd.js";
 
@@ -984,7 +985,8 @@ export default {
   //
   // The third, hourly at half past, is the alerts run (src/alerts.js). It is
   // matched first and by its whole string, so the two above keep the branches
-  // they had. It also runs the Golf Ball Drop posts, which retries a post that
+  // they had. It also sends the reminders readers set on motdang.net
+  // (src/site.js) and runs the Golf Ball Drop posts, which retries a post that
   // failed at 09:00 the same day. The fourth, 02:00 UTC = 09:00 Bangkok, is
   // those posts' own (src/gbd.js).
   async scheduled(event, env, ctx) {
@@ -992,7 +994,8 @@ export default {
     if (cron === ALERT_CRON) {
       // One job to the runtime; the alerts result is what it resolves to.
       ctx.waitUntil((async () => {
-        const [alerts] = await Promise.allSettled([runAlerts(env), runGbdPosts(env).catch((e) => console.log("gbd posts failed", e.message))]);
+        const [alerts] = await Promise.allSettled([runAlerts(env), runGbdPosts(env).catch((e) => console.log("gbd posts failed", e.message)),
+          runReminders(env).catch((e) => console.log("reminders failed", e.message))]);
         if (alerts.status === "rejected") throw alerts.reason;
         return alerts.value;
       })());

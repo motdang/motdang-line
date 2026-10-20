@@ -16,7 +16,7 @@
 // is a row in alert_log.
 
 import stations from "../data/ping_stations.json" with { type: "json" };
-import { pushAlert } from "./line.js";
+import { pushAlert, alertsOn } from "./line.js";
 import { sayMany, quick, fresh, setPending, askLocation, metres, month, site, HOUR } from "./dm.js";
 import { shareBits } from "./plus.js";
 
@@ -26,6 +26,7 @@ const CITY_KM = 40;
 const SPACING_MS = 12 * HOUR;
 const RUN_MAX = 40;
 export const ALERT_CRON = "30 * * * *";
+const STOP_ON_SITE = "หยุด · stop: https://motdang.net/my.html#md-acct";
 
 const STATION_AT = Object.fromEntries(stations.stations.map((s) => [s.id, s]));
 const round3 = (x) => Math.round(x * 1000) / 1000;
@@ -113,7 +114,7 @@ export function findAlerts(place, ping, air) {
 
 // The hourly run. Returns what it did, for /desk/alerts and the tests.
 export async function runAlerts(env) {
-  if (String(env.ALERTS ?? "").toLowerCase() !== "on") return { why: "ALERTS not on" };
+  if (!alertsOn(env)) return { why: "ALERTS not on" };
   const places = (await env.DB.prepare("SELECT * FROM alert_places").all()).results || [];
   if (!places.length) return { why: "no places" };
   const [ping, air] = await Promise.all([getJson(env, "/data/ping.json"), getJson(env, "/data/air.json")]);
@@ -123,6 +124,8 @@ export async function runAlerts(env) {
   const done = { sent: 0, capped: 0, failed: 0, spaced: 0, held: 0 };
   for (const place of places) {
     for (const a of findAlerts(place, ping, air)) {
+      // with the chat closed (ALERTS off) "stop alerts" is answered on the site
+      if (String(env.ALERTS ?? "").toLowerCase() !== "on") a.text = a.text.replace(/^หยุดเตือน · stop alerts$/m, STOP_ON_SITE); // stylecheck: allow — เตือน = the opt-in alerts the reader subscribed to
       const recent = await env.DB.prepare(
         "SELECT 1 FROM alert_log WHERE user_id = ? AND kind = ? AND status IN ('sent','capped','failed') AND ts > ? LIMIT 1",
       ).bind(place.user_id, a.kind, now - SPACING_MS).first();
