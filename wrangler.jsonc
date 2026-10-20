@@ -11,7 +11,7 @@
 {
   "name": "motdang-line",
   "account_id": "fe332688b1b25b543f8429d7f08292a3",
-  "main": "src/worker.js",
+  "main": "src/entry.js",
   "compatibility_date": "2026-08-27",
   "workers_dev": false,
   "observability": { "enabled": true },
@@ -78,6 +78,13 @@
     "OWNERS": "off",
     "SPOTTERS": "off",
     "SAFE": "off",
+    // Signed in on motdang.net with LINE (src/site.js, Nan 2026-10-20): pushes the
+    // site asks for (a page sent to one's own chat, event reminders, the weekly
+    // issue) and alerts for a home set on the site. Neither opens the chat.
+    "SITE_PUSH": "on",
+    "SITE_ALERTS": "on",
+    // Pushes a month across the site's and the alerts' (the free plan's 300).
+    "PUSH_CAP": "300",
     // Alert pushes a month, across everyone. Pushes are metered by LINE.
     "ALERT_CAP": "300",
     // The address the bot hands out. Moves to https://motdang.net/u/ if the
