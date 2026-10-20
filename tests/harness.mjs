@@ -59,7 +59,7 @@ export function makeEnv(indexRows) {
     _sign: null,
     AI: { run: async () => ({ response: env._sign ? "```json\n" + JSON.stringify(env._sign) + "\n```" : "{}" }) },
     SIGN_MODEL: "@cf/test/vision",
-    DB: { prepare: (s) => new Stmt(db, s) },
+    DB: { prepare: (s) => new Stmt(db, s), async batch(stmts) { const out = []; for (const st of stmts) out.push(await st.run()); return out; } },
     INBOX: inbox,
     LINE_CHANNEL_SECRET: SECRET,
     LINE_CHANNEL_TOKEN: "test-token",

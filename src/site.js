@@ -48,8 +48,11 @@ export async function used(env, mo = month()) {
 }
 
 // What may still go out this month: our cap, and LINE's own count when it answers.
+// A cap from a var; anything that does not read as a number is the free plan's 300.
+export const capOf = (v, d = 300) => { const n = Number(v); return v != null && String(v).trim() !== "" && Number.isFinite(n) && n >= 0 ? n : d; };
+
 export async function room(env) {
-  const cap = Number(env.PUSH_CAP ?? 300);
+  const cap = capOf(env.PUSH_CAP);
   let left = cap - (await used(env));
   try {
     const [q, c] = await Promise.all([
@@ -61,10 +64,12 @@ export async function room(env) {
   return Math.max(0, left);
 }
 
-async function log(env, uid, kind, ref, status, now = Date.now()) {
-  await env.DB.prepare("INSERT INTO site_push (user_id, kind, ref, ts, month, status) VALUES (?, ?, ?, ?, ?, ?)")
-    .bind(uid, kind, ref ?? null, now, month(now), status).run();
-}
+const logStmt = (env, uid, kind, ref, status, now = Date.now()) =>
+  env.DB.prepare("INSERT INTO site_push (user_id, kind, ref, ts, month, status) VALUES (?, ?, ?, ?, ?, ?)")
+    .bind(uid, kind, ref ?? null, now, month(now), status);
+async function log(env, uid, kind, ref, status, now = Date.now()) { await logStmt(env, uid, kind, ref, status, now).run(); }
+// many writes in a few subrequests: D1's batch, 100 statements a call
+async function batch(env, stmts) { for (let i = 0; i < stmts.length; i += 100) await env.DB.batch(stmts.slice(i, i + 100)); }
 
 async function pushOne(env, to, text) {
   if (!open(env)) { console.log("site push held (SITE_PUSH not on):", clip(text, 200)); return false; }
@@ -88,7 +93,7 @@ export async function status(env, uid) {
     isFriend(env, uid),
     env.DB.prepare("SELECT lat, lng FROM alert_places WHERE user_id = ?").bind(uid).first(),
     env.DB.prepare("SELECT key, at, text FROM reminders WHERE user_id = ? AND sent IS NULL ORDER BY at").bind(uid).all(),
-    env.DB.prepare("SELECT COUNT(*) n FROM site_push WHERE user_id = ? AND kind = 'self' AND ts > ?").bind(uid, Date.now() - 24 * HOUR).first(),
+    env.DB.prepare("SELECT COUNT(*) n FROM site_push WHERE user_id = ? AND kind = 'self' AND ts > ? AND status IN ('sent','pending')").bind(uid, Date.now() - 24 * HOUR).first(),
   ]);
   return {
     friend, home: home ? { lat: home.lat, lng: home.lng } : null,
@@ -114,13 +119,20 @@ export async function clearHome(env, uid) {
 
 export async function toSelf(env, uid, text) {
   if (!goodUid(uid) || !text) return { error: "what" };
-  const n = (await env.DB.prepare("SELECT COUNT(*) n FROM site_push WHERE user_id = ? AND kind = 'self' AND ts > ?")
-    .bind(uid, Date.now() - 24 * HOUR).first())?.n ?? 0;
-  if (n >= SELF_PER_DAY) return { error: "day", left: 0 };
   if ((await room(env)) < 1) { await log(env, uid, "self", null, "capped"); return { error: "month" }; }
+  // the day's slot is taken in one conditional write, so two sends at once cannot both pass 20
+  const now = Date.now(), since = now - 24 * HOUR;
+  const take = await env.DB.prepare(`INSERT INTO site_push (user_id, kind, ref, ts, month, status)
+    SELECT ?, 'self', NULL, ?, ?, 'pending'
+    WHERE (SELECT COUNT(*) FROM site_push WHERE user_id = ? AND kind = 'self' AND ts > ? AND status IN ('sent','pending')) < ?`)
+    .bind(uid, now, month(now), uid, since, SELF_PER_DAY).run();
+  if (!take.meta?.changes) return { error: "day", left: 0 };
+  const row = take.meta.last_row_id;
   const ok = await pushOne(env, uid, clip(text, 2000));
-  await log(env, uid, "self", null, ok ? "sent" : "failed");
-  return ok ? { ok: true, left: SELF_PER_DAY - n - 1 } : { error: open(env) ? "line" : "held" };
+  await env.DB.prepare("UPDATE site_push SET status = ? WHERE id = ?").bind(ok ? "sent" : "failed", row).run();
+  const n = (await env.DB.prepare("SELECT COUNT(*) n FROM site_push WHERE user_id = ? AND kind = 'self' AND ts > ? AND status = 'sent'")
+    .bind(uid, since).first())?.n ?? 0;
+  return ok ? { ok: true, left: Math.max(0, SELF_PER_DAY - n) } : { error: open(env) ? "line" : "held" };
 }
 
 export async function remind(env, uid, key, at, text) {
@@ -149,6 +161,7 @@ export async function runReminders(env, now = Date.now()) {
   if (!due.length) return done;
   if (!open(env)) return { ...done, held: due.length };
   let left = await room(env);
+  const writes = [];
   for (const r of due) {
     let st;
     if (r.at < now - 6 * HOUR) st = "late";
@@ -156,9 +169,10 @@ export async function runReminders(env, now = Date.now()) {
     else st = (await pushOne(env, r.user_id, r.text)) ? "sent" : "failed";
     if (st === "sent") left--;
     done[st]++;
-    if (st !== "late") await log(env, r.user_id, "remind", r.key, st, now);
-    await env.DB.prepare("UPDATE reminders SET sent = ? WHERE user_id = ? AND key = ?").bind(now, r.user_id, r.key).run();
+    if (st !== "late") writes.push(logStmt(env, r.user_id, "remind", r.key, st, now));
+    writes.push(env.DB.prepare("UPDATE reminders SET sent = ? WHERE user_id = ? AND key = ?").bind(now, r.user_id, r.key));
   }
+  await batch(env, writes);
   return done;
 }
 
@@ -175,7 +189,7 @@ export async function weekly(env, uids, issue, text) {
   if (!open(env)) { console.log("weekly held (SITE_PUSH not on):", todo.length, clip(text, 200)); return out; }
   const left = await room(env);
   const go = todo.slice(0, left), over = todo.slice(left);
-  for (const u of over) await log(env, u, "weekly", issue, "capped");
+  await batch(env, over.map((u) => logStmt(env, u, "weekly", issue, "capped")));
   out.capped = over.length;
   for (let i = 0; i < go.length; i += MULTICAST) {
     const part = go.slice(i, i + MULTICAST);
@@ -184,19 +198,25 @@ export async function weekly(env, uids, issue, text) {
       body: JSON.stringify({ to: part, messages: chunk(text) }),
     });
     if (!r.ok) console.log("weekly multicast failed", r.status, clip(await r.text(), 300));
-    for (const u of part) await log(env, u, "weekly", issue, r.ok ? "sent" : "failed");
+    await batch(env, part.map((u) => logStmt(env, u, "weekly", issue, r.ok ? "sent" : "failed")));
     out[r.ok ? "sent" : "failed"] += part.length;
   }
   return out;
 }
 
+// The reader's places and reminders go; the push logs keep their rows without the
+// reader, so the month's count (PUSH_CAP, ALERT_CAP) stays what LINE counted.
 export async function forget(env, uid) {
   if (!goodUid(uid)) return { error: "uid" };
-  for (const t of ["alert_places", "reminders", "site_push", "alert_log"])
-    await env.DB.prepare(`DELETE FROM ${t} WHERE user_id = ?`).bind(uid).run();
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM alert_places WHERE user_id = ?").bind(uid),
+    env.DB.prepare("DELETE FROM reminders WHERE user_id = ?").bind(uid),
+    env.DB.prepare("UPDATE site_push SET user_id = 'forgotten' WHERE user_id = ?").bind(uid),
+    env.DB.prepare("UPDATE alert_log SET user_id = 'forgotten', text = NULL WHERE user_id = ?").bind(uid),
+  ]);
   return { ok: true };
 }
 
 export async function usage(env) {
-  return { month: month(), used: await used(env), cap: Number(env.PUSH_CAP ?? 300), room: await room(env) };
+  return { month: month(), used: await used(env), cap: capOf(env.PUSH_CAP), room: await room(env) };
 }

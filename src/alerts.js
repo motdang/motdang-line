@@ -17,6 +17,7 @@
 
 import stations from "../data/ping_stations.json" with { type: "json" };
 import { pushAlert, alertsOn } from "./line.js";
+import { room, capOf } from "./site.js";
 import { sayMany, quick, fresh, setPending, askLocation, metres, month, site, HOUR } from "./dm.js";
 import { shareBits } from "./plus.js";
 
@@ -118,9 +119,11 @@ export async function runAlerts(env) {
   const places = (await env.DB.prepare("SELECT * FROM alert_places").all()).results || [];
   if (!places.length) return { why: "no places" };
   const [ping, air] = await Promise.all([getJson(env, "/data/ping.json"), getJson(env, "/data/air.json")]);
-  const cap = Number(env.ALERT_CAP ?? 300);
+  const cap = capOf(env.ALERT_CAP);
   const now = Date.now(), mo = month(now);
   let used = (await env.DB.prepare("SELECT COUNT(*) n FROM alert_log WHERE month = ? AND status = 'sent'").bind(mo).first())?.n ?? 0;
+  // the month's pushes the site asked for count too (PUSH_CAP, LINE's own count)
+  let shared = await room(env);
   const done = { sent: 0, capped: 0, failed: 0, spaced: 0, held: 0 };
   for (const place of places) {
     for (const a of findAlerts(place, ping, air)) {
@@ -132,9 +135,9 @@ export async function runAlerts(env) {
       if (recent) { done.spaced++; continue; }
       if (done.sent + done.failed >= RUN_MAX) { done.held++; continue; }
       let status;
-      if (!(used < cap)) status = "capped";
+      if (!(used < cap) || shared < 1) status = "capped";
       else status = (await pushAlert(env, place.user_id, a.text)) ? "sent" : "failed";
-      if (status === "sent") used++;
+      if (status === "sent") { used++; shared--; }
       done[status]++;
       await env.DB.prepare(
         "INSERT INTO alert_log (user_id, kind, subject, ts, month, status, text) VALUES (?, ?, ?, ?, ?, ?, ?)",
