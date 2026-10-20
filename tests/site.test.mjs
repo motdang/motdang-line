@@ -142,4 +142,28 @@ test("forget: home, reminders and the push log go", async () => {
   assert.equal(s.home, null);
   assert.equal(s.reminders.length, 0);
   assert.equal(e._db.prepare("SELECT COUNT(*) n FROM site_push WHERE user_id = ?").get(A).n, 0);
+  assert.equal(await site.used(e), 1, "the month's count keeps the forgotten reader's send");
+});
+
+test("a PUSH_CAP that is not a number is the free plan's 300", async () => {
+  stub({ quota: 300, usedByLine: 0 });
+  assert.equal(await site.room(env({ PUSH_CAP: "off" })), 300);
+  assert.equal(site.capOf("12"), 12);
+  assert.equal(site.capOf(undefined), 300);
+});
+
+test("twenty a day holds for sends at once", async () => {
+  stub();
+  const e = env();
+  const r = await Promise.all(Array.from({ length: 25 }, (_, i) => site.toSelf(e, A, "n" + i)));
+  assert.equal(r.filter((x) => x.ok).length, 20);
+});
+
+test("alerts count against the shared month: no room, capped", async () => {
+  const calls = stub({ quota: 300, usedByLine: 300 });
+  const e = env({ SITE_ALERTS: "on" });
+  await site.setHome(e, A, 18.79, 98.98);
+  const r = await runAlerts(e);
+  assert.equal(r.capped, 1);
+  assert.equal(pushes(calls).length, 0);
 });
