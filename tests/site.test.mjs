@@ -145,9 +145,9 @@ test("forget: home, reminders and the push log go", async () => {
   assert.equal(await site.used(e), 1, "the month's count keeps the forgotten reader's send");
 });
 
-test("a PUSH_CAP that is not a number is the free plan's 300", async () => {
-  stub({ quota: 300, usedByLine: 0 });
-  assert.equal(await site.room(env({ PUSH_CAP: "off" })), 300);
+test("a PUSH_CAP that is not a number is the free plan's 500", async () => {
+  stub({ quota: 600, usedByLine: 0 });
+  assert.equal(await site.room(env({ PUSH_CAP: "off" })), 500);
   assert.equal(site.capOf("12"), 12);
   assert.equal(site.capOf(undefined), 300);
 });
