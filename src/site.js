@@ -18,7 +18,7 @@
 //
 // Pushes are metered by LINE. SITE_PUSH "on" opens this door and nothing else;
 // every push is a row in site_push, and the month's pushes here and in
-// alert_log stay under PUSH_CAP (default 300, the free plan's allowance) and
+// alert_log stay under PUSH_CAP (wrangler.jsonc: 500, this account's free plan) and
 // under what LINE's own quota says is left.
 
 import { month, HOUR } from "./dm.js";
@@ -48,11 +48,11 @@ export async function used(env, mo = month()) {
 }
 
 // What may still go out this month: our cap, and LINE's own count when it answers.
-// A cap from a var; anything that does not read as a number is the free plan's 300.
+// A cap from a var; anything that does not read as a number is the default d.
 export const capOf = (v, d = 300) => { const n = Number(v); return v != null && String(v).trim() !== "" && Number.isFinite(n) && n >= 0 ? n : d; };
 
 export async function room(env) {
-  const cap = capOf(env.PUSH_CAP);
+  const cap = capOf(env.PUSH_CAP, 500);
   let left = cap - (await used(env));
   try {
     const [q, c] = await Promise.all([
@@ -218,5 +218,5 @@ export async function forget(env, uid) {
 }
 
 export async function usage(env) {
-  return { month: month(), used: await used(env), cap: capOf(env.PUSH_CAP), room: await room(env) };
+  return { month: month(), used: await used(env), cap: capOf(env.PUSH_CAP, 500), room: await room(env) };
 }

@@ -83,8 +83,9 @@
     // issue) and alerts for a home set on the site. Neither opens the chat.
     "SITE_PUSH": "on",
     "SITE_ALERTS": "on",
-    // Pushes a month across the site's and the alerts' (the free plan's 300).
-    "PUSH_CAP": "300",
+    // Pushes a month across the site's and the alerts': @964yxgnk is a US-region
+    // account on the free Communication plan, 500 a month (OA Manager, 2026-10-21).
+    "PUSH_CAP": "500",
     // Alert pushes a month, across everyone. Pushes are metered by LINE.
     "ALERT_CAP": "300",
     // The address the bot hands out. Moves to https://motdang.net/u/ if the
