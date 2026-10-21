@@ -18,7 +18,7 @@
 //
 // Pushes are metered by LINE. SITE_PUSH "on" opens this door and nothing else;
 // every push is a row in site_push, and the month's pushes here and in
-// alert_log stay under PUSH_CAP (default 300, the free plan's allowance) and
+// alert_log stay under PUSH_CAP (wrangler.jsonc: 500, this account's free plan) and
 // under what LINE's own quota says is left.
 
 import { month, HOUR } from "./dm.js";
