@@ -177,6 +177,9 @@ export async function onPm(ev, env) {
   if (ev.type !== "message" || ev.message?.type !== "text") return;
   const c = parse(ev.message.text);
   try {
+    // Any other word drops the action waiting for its yes, so a yes only ever
+    // answers the question right above it.
+    if (c.k !== "yes" && c.k !== "no") await setS(env, "pm_wait:" + uid, "");
     if (c.k === "help" || c.k === "unknown") return say(env, ev, (c.k === "unknown" ? "I didn't catch that.\n\n" : "") + HELP);
     if (c.k === "link") return say(env, ev, env.PM_LINK ? `Your wheel page. Keep it to yourself.\n${env.PM_LINK}` : "The wheel link is not set here yet.");
 

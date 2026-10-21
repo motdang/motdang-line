@@ -170,3 +170,13 @@ test("the ops room stays silent when Michael says today there", async () => {
   await deliver(worker, env, [ev.text("Cops", MICHAEL, "today")]);
   assert.deepEqual(said.replies, []);
 });
+
+test("another word in between drops the waiting action (CodeRabbit, #4)", async () => {
+  const { env, said, acts } = setup();
+  await send(env, "today");
+  await send(env, "give 2 Beer");
+  await send(env, "today");
+  await send(env, "yes");
+  assert.equal(last(said), "Nothing waiting for a yes.");
+  assert.equal(acts().length, 0);
+});
