@@ -1,0 +1,172 @@
+// Michael's PM words in a one-to-one chat (src/pm.js). The wheel is faked:
+// every call it would get is recorded, so the tests can see what would post.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import worker from "../src/worker.js";
+import { parse, personAndNote, lists } from "../src/pm.js";
+import { makeEnv, stubLine, deliver, ev } from "./harness.mjs";
+
+const MICHAEL = "Umichael", STRANGER = "Ustranger";
+const old = new Date(Date.now() - 6 * 864e5).toISOString();
+const fresh = new Date().toISOString();
+
+const BOARD = () => ({
+  me: { id: "michael", name: "Michael" },
+  holders: ["Beer", "Hom", "Marcus", "Wai Tun", "Michael", "NaN"],
+  load: { Marcus: 5, Beer: 0, "Wai Tun": 1 },
+  cap: { Marcus: 5 },
+  drafts: [{ n: 1 }],
+  gold: { paid: 2, baht: 6000, goal: 61000 },
+  log: [{ at: fresh, id: "t5", title: "Passed one", act: "passed", who: "Michael" }],
+  tickets: [
+    { id: "t1", title: "Print run quotes", state: "Done", who: ["Beer"], created: "1", active: fresh, goal: "Two quotes", done: "Two PDFs in the thread", link: "https://discord.com/channels/g/t1" },
+    { id: "t2", title: "NFC chips", state: "Open", who: [], created: "2", active: fresh },
+    { id: "t3", title: "Share card pattern", state: "Doing", who: ["Wai Tun"], created: "3", active: old },
+    { id: "t4", title: "Gold credit", state: "Waiting", who: ["Marcus"], created: "4", active: fresh, rank: 1 },
+    { id: "t5", title: "Passed one", state: "Done", who: ["Hom"], created: "5", active: fresh },
+  ],
+});
+
+function setup() {
+  const env = makeEnv([]);
+  env.SPEAK = "off"; // the deployed mute: these answers must get through it
+  env.PM_USERS = MICHAEL;
+  env.PM_KEY = "k-michael";
+  env.PM_URL = "https://wheel.test";
+  env.PM_LINK = "https://wheel.test/#k=secret";
+  const said = stubLine();
+  const line = globalThis.fetch;
+  const wheel = [];
+  globalThis.fetch = async (url, init) => {
+    const u = String(url);
+    if (u.startsWith("https://wheel.test")) {
+      wheel.push({ path: u.slice(18), key: init?.headers?.["x-key"], body: init?.body ? JSON.parse(init.body) : null });
+      return new Response(JSON.stringify(BOARD()), { status: 200 });
+    }
+    return line(url, init);
+  };
+  return { env, said, wheel, acts: () => wheel.filter((w) => w.path === "/api/act") };
+}
+const send = (env, text, who = MICHAEL) => deliver(worker, env, [ev.dm(who, text)]);
+const last = (said) => said.replies.at(-1);
+
+test("parse reads the words Michael types", () => {
+  assert.deepEqual(parse("Give 3 Wai Tun start Monday"), { k: "give", n: 3, rest: "Wai Tun start Monday" });
+  assert.deepEqual(parse("give #3 to Beer"), { k: "give", n: 3, rest: "Beer" });
+  assert.deepEqual(parse("fail 2 the link is broken"), { k: "fail", n: 2, note: "the link is broken" });
+  assert.deepEqual(parse("doing 4"), { k: "state", state: "Doing", n: 4, note: "" });
+  assert.deepEqual(parse("first 1"), { k: "rank", rank: 1, n: 1 });
+  assert.deepEqual(parse("7"), { k: "open", n: 7 });
+  assert.equal(parse("Today").k, "today");
+  assert.equal(parse("how are you").k, "unknown");
+  assert.deepEqual(personAndNote("wai tun please", ["Wai", "Wai Tun"]), { who: "Wai Tun", note: "please" });
+  assert.equal(personAndNote("Bob", ["Beer"]), null);
+});
+
+test("lists match the wheel's Today page", () => {
+  const B = BOARD();
+  assert.deepEqual(lists.check(B).map((x) => x.id), ["t1"], "passed ones drop off");
+  assert.deepEqual(lists.give(B).map((x) => x.id), ["t2"]);
+  assert.deepEqual(lists.quiet(B).map((x) => x.id), ["t3"]);
+});
+
+test("someone else's one-to-one chat gets nothing from the PM words", async () => {
+  const { env, said, wheel } = setup();
+  await send(env, "today", STRANGER);
+  assert.deepEqual(said.replies, []);
+  assert.equal(wheel.length, 0);
+});
+
+test("today answers through the mute, numbered, with Michael's key", async () => {
+  const { env, said, wheel } = setup();
+  await send(env, "today");
+  const r = last(said);
+  assert.match(r, /To check[\s\S]*1\. ✅ Print run quotes · Beer/);
+  assert.match(r, /To give out[\s\S]*2\. 📥 NFC chips · nobody/);
+  assert.match(r, /Quiet 4\+ days[\s\S]*3\. 🔨 Share card pattern · Wai Tun/);
+  assert.match(r, /Marcus 5\/5/);
+  assert.match(r, /1 drafts not posted/);
+  assert.equal(wheel[0].key, "k-michael");
+});
+
+test("a number opens the ticket from the last list", async () => {
+  const { env, said } = setup();
+  await send(env, "today");
+  await send(env, "1");
+  assert.match(last(said), /^1\. Print run quotes\n✅ Done · Beer\nGoal: Two quotes\nDone means: Two PDFs/);
+});
+
+test("give asks first, posts only on yes", async () => {
+  const { env, said, acts } = setup();
+  await send(env, "today");
+  await send(env, "give 2 Wai Tun start Monday");
+  assert.match(last(said), /Give 2 · NFC chips\nto Wai Tun\nNote: start Monday/);
+  assert.equal(acts().length, 0, "nothing posted before the yes");
+  await send(env, "yes");
+  assert.deepEqual(acts()[0].body, { id: "t2", act: "give", who: "Wai Tun", note: "start Monday" });
+  assert.equal(last(said), "Done: 2 given to Wai Tun.");
+  await send(env, "yes");
+  assert.equal(last(said), "Nothing waiting for a yes.");
+  assert.equal(acts().length, 1, "a second yes does not post again");
+});
+
+test("give to someone at their limit says it goes to Waiting", async () => {
+  const { env, said } = setup();
+  await send(env, "today");
+  await send(env, "give 2 Marcus");
+  assert.match(last(said), /holds 5\/5, so it goes to Waiting/);
+});
+
+test("no cancels; fail needs a reason; unknown person is named", async () => {
+  const { env, said, acts } = setup();
+  await send(env, "today");
+  await send(env, "pass 1");
+  await send(env, "no");
+  await send(env, "yes");
+  assert.equal(acts().length, 0);
+  await send(env, "fail 1");
+  assert.match(last(said), /Say what is wrong/);
+  await send(env, "give 2 Bob");
+  assert.match(last(said), /to whom\? Beer, Hom/);
+});
+
+test("a number with no list, or past its end, is refused", async () => {
+  const { env, said } = setup();
+  await send(env, "2");
+  assert.match(last(said), /Send today, who or find first/);
+  await send(env, "today");
+  await send(env, "9");
+  assert.match(last(said), /No 9 on the last list \(it had 3\)/);
+});
+
+test("order posts nothing and needs no yes", async () => {
+  const { env, said, acts } = setup();
+  await send(env, "today");
+  await send(env, "first 3");
+  assert.deepEqual(acts()[0].body, { id: "t3", act: "rank", rank: 1 });
+  assert.match(last(said), /order first\. Nothing posted\./);
+});
+
+test("who, find, report, link, help", async () => {
+  const { env, said } = setup();
+  await send(env, "who marcus");
+  assert.match(last(said), /Marcus: 5 open or doing \(limit 5\) · 1 not done\n1\. ⏳ Gold credit/);
+  await send(env, "find nfc");
+  assert.match(last(said), /Found 1\n1\. 📥 NFC chips/);
+  await send(env, "report");
+  assert.match(last(said), /Gold sold, last 30 days: 2 · ฿6,000 of ฿61,000/);
+  assert.match(last(said), /First:\n- Gold credit \(Marcus\)/);
+  assert.match(last(said), /— Michael$/);
+  await send(env, "link");
+  assert.match(last(said), /wheel\.test\/#k=secret/);
+  await send(env, "hello there");
+  assert.match(last(said), /^I didn't catch that\.\n\nPM words/);
+});
+
+test("the ops room stays silent when Michael says today there", async () => {
+  const { env, said } = setup();
+  await deliver(worker, env, [ev.join("Cops")]);
+  said.replies.length = 0;
+  await deliver(worker, env, [ev.text("Cops", MICHAEL, "today")]);
+  assert.deepEqual(said.replies, []);
+});

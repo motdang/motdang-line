@@ -28,6 +28,7 @@ import { runAlerts, ALERT_CRON } from "./alerts.js";
 import { runReminders } from "./site.js";
 import { ADDRESS, BOTS_CALL, readsAsAddress, readsAsBotsCall } from "./address.js";
 import { onGbd, gbdGroups, ledgerTsv, runGbdPosts, GBD_CRON } from "./gbd.js";
+import { onPm, pmUser } from "./pm.js";
 
 // Bump when what the Worker does changes in a way the desk can see.
 const BUILD = "2026-10-10-gbd";
@@ -321,6 +322,9 @@ async function handleEvent(ev, env) {
   // one-to-one event, so the team room's handling is the same whatever the
   // flags say.
   if (src.type === "user") {
+    // Michael's PM words (src/pm.js). His text goes there; his photos and
+    // everything from anyone else take the path below, unchanged.
+    if (pmUser(env, src.userId) && ev.type === "message" && ev.message?.type === "text") return onPm(ev, env);
     if (directOn(env)) return onDirect(ev, env);
     return;
   }
