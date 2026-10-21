@@ -110,6 +110,28 @@ not the ops transcript, the bug list or the Drive queue.
 `tests/silence.test.mjs` proves the ops room, unknown groups and the thoughts
 room silent; `tests/rooms.test.mjs` proves what the two new rooms do.
 
+## Michael's PM words
+
+Nan, 2026-10-21: *"give him access to PM tools in our line channels"*, then
+"Bot DM, Michael only". Michael chats one-to-one with the account; `src/pm.js`
+answers the LINE ids in the secret `PM_USERS` and reads and acts on the Team
+Wheel (pm.nanobotco.workers.dev) with his wheel key, `PM_KEY`. A Give here is
+the wheel's Give and posts in Discord as "Michael · PM".
+
+| he sends | it does |
+|---|---|
+| `today` | to check, to give out, quiet 4+ days, numbered; who holds how many |
+| `report` | the wheel's status report, to forward |
+| `who Beer` · `find cards` | a numbered list |
+| `3` | ticket 3 of the last list: state, holder, goal, done means, Discord link |
+| `give 3 Beer [note]` · `pass 3` · `fail 3 why` · `note 3 words` · `back 3 why` · `doing 3` | asks, posts on `yes` |
+| `first 3` · `next 3` · `later 3` | his order on the wheel; posts nothing |
+| `link` | his wheel page (secret `PM_LINK`) |
+
+Replies only. The ops room and every other person's one-to-one chat are as
+before (`tests/pm.test.mjs`). Secrets: `PM_USERS`, `PM_KEY`, `PM_LINK`;
+`PM_URL` defaults to the wheel.
+
 ## The Golf Ball Drop room
 
 The Chiang Mai International Rotary Club's Golf Ball Drop is Sat 30 Jan 2027: 300 numbered balls, 1,000 baht each last year, tickets handed to members 1 Nov – 10 Jan. The account sits in the club's group "Golf Ball Drop 2026-2027", set to `gbd` from the Mac. Club members are not Mot Dang staff, so this room has its own handling in `src/gbd.js`.
