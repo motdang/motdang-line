@@ -28,7 +28,7 @@ const BOARD = () => ({
     { id: "t2", title: "NFC chips", state: "Open", who: [], created: "2", active: fresh },
     { id: "t3", title: "Share card pattern", state: "Doing", who: ["Wai Tun"], created: "3", active: old },
     { id: "t4", title: "Gold credit", state: "Waiting", who: ["Marcus"], created: "4", active: fresh, rank: 1 },
-    { id: "t5", title: "Passed one", state: "Done", who: ["Hom"], created: "5", active: fresh },
+    { id: "t5", title: "Passed one", state: "Done", who: ["Hom"], created: "5", active: fresh, checked: fresh },
   ],
 });
 

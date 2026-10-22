@@ -55,13 +55,14 @@ async function wheel(env, path, body) {
 }
 
 // The same lists the wheel's Today page shows (pm-desk public/app.js).
-const live = (B) => B.tickets.filter((x) => !x.archived || x.state !== "Done");
+// A pass is kept on the ticket (x.checked); reading it from the last 60 log lines let old passes fall off.
+const live = (B) => B.tickets.filter((x) => x.state !== "Done" || (!x.checked && !x.archived));
 const sorted = (l) => [...l].sort((a, b) => (a.rank || 9) - (b.rank || 9)
   || (b.priority === "revenue") - (a.priority === "revenue") || String(a.created).localeCompare(String(b.created)));
-const passed = (B) => new Set((B.log || []).filter((l) => l.act === "passed").map((l) => l.id));
 export const lists = {
-  check: (B) => sorted(live(B).filter((x) => x.state === "Done" && !passed(B).has(x.id))),
-  give: (B) => sorted(live(B).filter((x) => !x.who.length && x.state !== "Done")),
+  check: (B) => sorted(live(B).filter((x) => x.state === "Done")),
+  // ready to hand out; nobody's on-hold (Waiting) tickets are not "to give out" yet
+  give: (B) => sorted(live(B).filter((x) => !x.who.length && x.state !== "Done" && x.state !== "Waiting")),
   quiet: (B, now = Date.now()) => sorted(live(B).filter((x) => (x.state === "Doing" || x.state === "Open")
     && x.who.length && now - new Date(x.active) > 4 * 864e5)),
 };
