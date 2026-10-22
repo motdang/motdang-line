@@ -18,6 +18,11 @@ const BOARD = () => ({
   drafts: [{ n: 1 }],
   gold: { paid: 2, baht: 6000, goal: 61000 },
   log: [{ at: fresh, id: "t5", title: "Passed one", act: "passed", who: "Michael" }],
+  repeats: [
+    { n: 1, title: "Check the mailbox", face: "📬", whoName: "Michael", due: true, late: false, slot: "2026-10-22", next: "2026-10-26", time: "10:00" },
+    { n: 2, title: "Water the plants", face: "🪴", whoName: "Michael", due: false, slot: "2026-10-21", next: "2026-10-28" },
+    { n: 3, title: "Sweep the shop", face: "🧹", whoName: "Beer", due: true, slot: "2026-10-22", next: "2026-10-23" },
+  ],
   tickets: [
     { id: "t1", title: "Print run quotes", state: "Done", who: ["Beer"], created: "1", active: fresh, goal: "Two quotes", done: "Two PDFs in the thread", link: "https://discord.com/channels/g/t1" },
     { id: "t2", title: "NFC chips", state: "Open", who: [], created: "2", active: fresh },
@@ -181,4 +186,47 @@ test("another word in between drops the waiting action (CodeRabbit, #4)", async 
   await send(env, "yes");
   assert.equal(last(said), "Nothing waiting for a yes.");
   assert.equal(acts().length, 0);
+});
+
+test("parse tells a repeat word from a ticket number", () => {
+  assert.deepEqual(parse("done mailbox"), { k: "rdone", words: "mailbox" });
+  assert.deepEqual(parse("Did the mailbox"), { k: "rdone", words: "the mailbox" });
+  assert.deepEqual(parse("done"), { k: "rdone", words: "" });
+  assert.deepEqual(parse("done 3"), { k: "state", state: "Done", n: 3, note: "" });
+  assert.deepEqual(parse("done 3 all good"), { k: "state", state: "Done", n: 3, note: "all good" });
+  assert.equal(parse("undo").k, "undo");
+});
+
+test("today lists Michael's due repeats on top, not anyone else's, and keeps the ticket numbers", async () => {
+  const { env, said } = setup();
+  await send(env, "today");
+  const r = last(said);
+  assert.match(r, /^🔁 Due today\n📬 Check the mailbox · 10:00 → send: done mailbox\n✅ To check/);
+  assert.doesNotMatch(r, /plants|Sweep/);
+  assert.match(r, /1\. ✅ Print run quotes/);
+});
+
+test("done mailbox ticks it with no yes and posts nothing; undo takes it back", async () => {
+  const { env, said, wheel, acts } = setup();
+  await send(env, "done mailbox");
+  const call = wheel.find((w) => w.path === "/api/repeat/done");
+  assert.deepEqual(call.body, { n: 1 });
+  assert.equal(acts().length, 0, "no ticket action");
+  assert.match(last(said), /^✅ 📬 Check the mailbox, done\. Next: Mon 26 Oct\. Nothing posted\./);
+  await send(env, "undo");
+  assert.deepEqual(wheel.filter((w) => w.path === "/api/repeat/done").at(-1).body, { n: 1, undo: true, was: null });
+  assert.match(last(said), /not done again/);
+  await send(env, "undo");
+  assert.equal(last(said), "Nothing to undo.");
+});
+
+test("done alone ticks the one due; a repeat already done, or someone else's, is refused", async () => {
+  const { env, said, wheel } = setup();
+  await send(env, "done");
+  assert.deepEqual(wheel.find((w) => w.path === "/api/repeat/done").body, { n: 1 });
+  await send(env, "done plants");
+  assert.match(last(said), /Water the plants is already done\. Next: Wed 28 Oct\./);
+  await send(env, "done sweep");
+  assert.match(last(said), /No repeat called "sweep"\. Yours: Check the mailbox, Water the plants/);
+  assert.equal(wheel.filter((w) => w.path === "/api/repeat/done").length, 1);
 });
