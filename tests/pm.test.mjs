@@ -24,11 +24,11 @@ const BOARD = () => ({
     { n: 3, title: "Sweep the shop", face: "🧹", whoName: "Beer", due: true, slot: "2026-10-22", next: "2026-10-23" },
   ],
   tickets: [
-    { id: "t1", title: "Print run quotes", state: "Done", who: ["Beer"], created: "1", active: fresh, goal: "Two quotes", done: "Two PDFs in the thread", link: "https://discord.com/channels/g/t1" },
-    { id: "t2", title: "NFC chips", state: "Open", who: [], created: "2", active: fresh },
-    { id: "t3", title: "Share card pattern", state: "Doing", who: ["Wai Tun"], created: "3", active: old },
-    { id: "t4", title: "Gold credit", state: "Waiting", who: ["Marcus"], created: "4", active: fresh, rank: 1 },
-    { id: "t5", title: "Passed one", state: "Done", who: ["Hom"], created: "5", active: fresh, checked: fresh },
+    { id: "t1", num: 31, title: "Print run quotes", state: "Done", who: ["Beer"], created: "1", active: fresh, goal: "Two quotes", done: "Two PDFs in the thread", link: "https://discord.com/channels/g/t1" },
+    { id: "t2", num: 54, title: "NFC chips", state: "Open", who: [], created: "2", active: fresh },
+    { id: "t3", num: 12, title: "Share card pattern", state: "Doing", who: ["Wai Tun"], created: "3", active: old },
+    { id: "t4", num: 40, title: "Gold credit", state: "Waiting", who: ["Marcus"], created: "4", active: fresh, rank: 1 },
+    { id: "t5", num: 5, title: "Passed one", state: "Done", who: ["Hom"], created: "5", active: fresh, checked: fresh },
   ],
 });
 
@@ -86,30 +86,29 @@ test("today answers through the mute, numbered, with Michael's key", async () =>
   const { env, said, wheel } = setup();
   await send(env, "today");
   const r = last(said);
-  assert.match(r, /To check[\s\S]*1\. ✅ Print run quotes · Beer/);
-  assert.match(r, /To give out[\s\S]*2\. 📥 NFC chips · nobody/);
-  assert.match(r, /Quiet 4\+ days[\s\S]*3\. 🔨 Share card pattern · Wai Tun/);
+  assert.match(r, /To check[\s\S]*#31 ✅ Print run quotes · Beer/);
+  assert.match(r, /To give out[\s\S]*#54 📥 NFC chips · nobody/);
+  assert.match(r, /Quiet 4\+ days[\s\S]*#12 🔨 Share card pattern · Wai Tun/);
   assert.match(r, /Marcus 5\/5/);
   assert.match(r, /1 drafts not posted/);
   assert.equal(wheel[0].key, "k-michael");
 });
 
-test("a number opens the ticket from the last list", async () => {
+test("a number opens the ticket with that number", async () => {
   const { env, said } = setup();
-  await send(env, "today");
-  await send(env, "1");
-  assert.match(last(said), /^1\. Print run quotes\n✅ Done · Beer\nGoal: Two quotes\nDone means: Two PDFs/);
+  await send(env, "31");
+  assert.match(last(said), /^#31 Print run quotes\n✅ Done · Beer\nGoal: Two quotes\nDone means: Two PDFs/);
 });
 
 test("give asks first, posts only on yes", async () => {
   const { env, said, acts } = setup();
   await send(env, "today");
-  await send(env, "give 2 Wai Tun start Monday");
-  assert.match(last(said), /Give 2 · NFC chips\nto Wai Tun\nNote: start Monday/);
+  await send(env, "give 54 Wai Tun start Monday");
+  assert.match(last(said), /Give 54 · NFC chips\nto Wai Tun\nNote: start Monday/);
   assert.equal(acts().length, 0, "nothing posted before the yes");
   await send(env, "yes");
   assert.deepEqual(acts()[0].body, { id: "t2", act: "give", who: "Wai Tun", note: "start Monday" });
-  assert.equal(last(said), "Done: 2 given to Wai Tun.");
+  assert.equal(last(said), "Done: 54 given to Wai Tun.");
   await send(env, "yes");
   assert.equal(last(said), "Nothing waiting for a yes.");
   assert.equal(acts().length, 1, "a second yes does not post again");
@@ -118,7 +117,7 @@ test("give asks first, posts only on yes", async () => {
 test("give to someone at their limit is refused before any yes", async () => {
   const { env, said, acts } = setup();
   await send(env, "today");
-  await send(env, "give 2 Marcus");
+  await send(env, "give 54 Marcus");
   assert.match(last(said), /Marcus holds 5\/5, the limit\. Pick someone else/);
   await send(env, "yes");
   assert.equal(acts().length, 0, "nothing posted");
@@ -127,7 +126,7 @@ test("give to someone at their limit is refused before any yes", async () => {
 test("someone at their limit can still be given a ticket they already hold", async () => {
   const { env, said, acts } = setup();
   await send(env, "find gold");
-  await send(env, "give 1 Marcus");
+  await send(env, "give 40 Marcus");
   assert.doesNotMatch(last(said), /the limit/);
   await send(env, "yes");
   assert.equal(acts()[0].body.id, "t4");
@@ -137,29 +136,29 @@ test("someone at their limit can still be given a ticket they already hold", asy
 test("no cancels; fail needs a reason; unknown person is named", async () => {
   const { env, said, acts } = setup();
   await send(env, "today");
-  await send(env, "pass 1");
+  await send(env, "pass 31");
   await send(env, "no");
   await send(env, "yes");
   assert.equal(acts().length, 0);
-  await send(env, "fail 1");
+  await send(env, "fail 31");
   assert.match(last(said), /Say what is wrong/);
-  await send(env, "give 2 Bob");
+  await send(env, "give 54 Bob");
   assert.match(last(said), /to whom\? Beer, Hom/);
 });
 
-test("a number with no list, or past its end, is refused", async () => {
+test("a number no ticket has is refused, and a place on the list is not a number", async () => {
   const { env, said } = setup();
-  await send(env, "2");
-  assert.match(last(said), /Send today, who or find first/);
+  await send(env, "77");
+  assert.match(last(said), /No ticket #77/);
   await send(env, "today");
-  await send(env, "9");
-  assert.match(last(said), /No 9 on the last list \(it had 3\)/);
+  await send(env, "2");
+  assert.match(last(said), /No ticket #2/);
 });
 
 test("order posts nothing and needs no yes", async () => {
   const { env, said, acts } = setup();
   await send(env, "today");
-  await send(env, "first 3");
+  await send(env, "first 12");
   assert.deepEqual(acts()[0].body, { id: "t3", act: "rank", rank: 1 });
   assert.match(last(said), /order first\. Nothing posted\./);
 });
@@ -167,9 +166,9 @@ test("order posts nothing and needs no yes", async () => {
 test("who, find, report, link, help", async () => {
   const { env, said } = setup();
   await send(env, "who marcus");
-  assert.match(last(said), /Marcus: 5 open or doing \(limit 5\) · 1 not done\n1\. ⏳ Gold credit/);
+  assert.match(last(said), /Marcus: 5 open or doing \(limit 5\) · 1 not done\n#40 ⏳ Gold credit/);
   await send(env, "find nfc");
-  assert.match(last(said), /Found 1\n1\. 📥 NFC chips/);
+  assert.match(last(said), /Found 1\n#54 📥 NFC chips/);
   await send(env, "report");
   assert.match(last(said), /Gold sold, last 30 days: 2 · ฿6,000 of ฿61,000/);
   assert.match(last(said), /First:\n- Gold credit \(Marcus\)/);
@@ -191,7 +190,7 @@ test("the ops room stays silent when Michael says today there", async () => {
 test("another word in between drops the waiting action (CodeRabbit, #4)", async () => {
   const { env, said, acts } = setup();
   await send(env, "today");
-  await send(env, "give 2 Beer");
+  await send(env, "give 54 Beer");
   await send(env, "today");
   await send(env, "yes");
   assert.equal(last(said), "Nothing waiting for a yes.");
@@ -213,7 +212,7 @@ test("today lists Michael's due repeats on top, not anyone else's, and keeps the
   const r = last(said);
   assert.match(r, /^🔁 Due today\n📬 Check the mailbox · 10:00 → send: done mailbox\n✅ To check/);
   assert.doesNotMatch(r, /plants|Sweep/);
-  assert.match(r, /1\. ✅ Print run quotes/);
+  assert.match(r, /#31 ✅ Print run quotes/);
 });
 
 test("done mailbox ticks it with no yes and posts nothing; undo takes it back", async () => {

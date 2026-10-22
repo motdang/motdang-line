@@ -69,7 +69,7 @@ export const lists = {
 
 const ICON = { Open: "📥", Doing: "🔨", Waiting: "⏳", Done: "✅" };
 const short = (s, n = 70) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
-const row = (x, i) => `${i}. ${ICON[x.state] || ""} ${short(x.title)} · ${x.who.join(", ") || "nobody"}`;
+const row = (x, i) => `#${x.num ?? i} ${ICON[x.state] || ""} ${short(x.title)} · ${x.who.join(", ") || "nobody"}`;
 
 // Repeats (the wheel's 🔁): jobs that come back to one person on chosen weekdays.
 // Ticking one posts nothing in Discord, so it needs no yes; "undo" takes it back.
@@ -84,8 +84,8 @@ function repeatLines(B) {
   return due.map((r) => `${r.face || "🔁"} ${short(r.title)}${r.late ? ` · since ${dayOf(r.slot)}` : r.time ? ` · ${r.time}` : ""} → send: done ${word(r)}`);
 }
 
-// Numbers run on across the sections of one answer, and that numbering is what
-// the next "give 3 …" means.
+// Each line leads with the ticket's own number, the one on the wheel and in Discord (NaN, 2026-10-22),
+// and that number is what "give 45 …" means.
 function numbered(sections) {
   const ids = [], out = [];
   for (const [head, items, empty] of sections) {
@@ -108,13 +108,13 @@ const HELP = [
   "report · a status report to forward",
   "who Beer · what one person holds",
   "find cards · search tickets",
-  "3 · open ticket 3 from the last list",
-  "give 3 Beer · hand it over (add a note after)",
-  "pass 3 · fail 3 what is wrong",
-  "note 3 your words · posts in the ticket",
-  "doing 3 · waiting 3 · done 3 · open 3",
-  "first 3 · next 3 · later 3 · your order",
-  "back 3 what is missing · to NaN",
+  "45 · open ticket #45 (the number on the ticket)",
+  "give 45 Beer · hand it over (add a note after)",
+  "pass 45 · fail 45 what is wrong",
+  "note 45 your words · posts in the ticket",
+  "doing 45 · waiting 45 · done 45 · open 45",
+  "first 45 · next 45 · later 45 · your order",
+  "back 45 what is missing · to NaN",
   "done mailbox · tick a 🔁 repeat done (undo takes it back)",
   "link · your wheel page",
   "Anything that posts asks for a yes first.",
@@ -140,7 +140,7 @@ function sitrep(B, today = new Date()) {
 
 function ticketText(x, n) {
   return [
-    `${n}. ${x.title}`,
+    `#${x.num ?? n} ${x.title}`,
     `${ICON[x.state] || ""} ${x.state} · ${x.who.join(", ") || "nobody"}${x.priority === "revenue" ? " · ฿ revenue" : ""}${x.due ? " · due " + x.due : ""}`,
     x.goal ? `Goal: ${x.goal}` : "",
     x.done ? `Done means: ${x.done}` : "",
@@ -164,11 +164,11 @@ export function parse(text) {
   if ((m = s.match(/^(?:done|did)(?:\s+(?!#?\d+(?:\s|$))(.+))?$/i))) return { k: "rdone", words: (m[1] || "").trim() };
   if ((m = s.match(/^who\s+(.+)$/i))) return { k: "who", name: m[1] };
   if ((m = s.match(/^find\s+(.+)$/i))) return { k: "find", words: m[1] };
-  if ((m = s.match(/^#?(\d{1,3})$/))) return { k: "open", n: +m[1] };
-  if ((m = s.match(/^give\s+#?(\d{1,3})\s+(?:to\s+)?(.+)$/i))) return { k: "give", n: +m[1], rest: m[2] };
-  if ((m = s.match(/^(pass|fail|note|back)\s+#?(\d{1,3})(?:\s+([\s\S]+))?$/i))) return { k: m[1].toLowerCase(), n: +m[2], note: (m[3] || "").trim() };
-  if ((m = s.match(/^(open|doing|waiting|done)\s+#?(\d{1,3})(?:\s+([\s\S]+))?$/i))) return { k: "state", state: STATES[m[1].toLowerCase()], n: +m[2], note: (m[3] || "").trim() };
-  if ((m = s.match(/^(first|next|later|unorder)\s+#?(\d{1,3})$/i))) return { k: "rank", rank: RANKS[m[1].toLowerCase()], n: +m[2] };
+  if ((m = s.match(/^#?(\d{1,4})$/))) return { k: "open", n: +m[1] };
+  if ((m = s.match(/^give\s+#?(\d{1,4})\s+(?:to\s+)?(.+)$/i))) return { k: "give", n: +m[1], rest: m[2] };
+  if ((m = s.match(/^(pass|fail|note|back)\s+#?(\d{1,4})(?:\s+([\s\S]+))?$/i))) return { k: m[1].toLowerCase(), n: +m[2], note: (m[3] || "").trim() };
+  if ((m = s.match(/^(open|doing|waiting|done)\s+#?(\d{1,4})(?:\s+([\s\S]+))?$/i))) return { k: "state", state: STATES[m[1].toLowerCase()], n: +m[2], note: (m[3] || "").trim() };
+  if ((m = s.match(/^(first|next|later|unorder)\s+#?(\d{1,4})$/i))) return { k: "rank", rank: RANKS[m[1].toLowerCase()], n: +m[2] };
   return { k: "unknown" };
 }
 
@@ -181,12 +181,10 @@ export function personAndNote(rest, holders) {
   return { who: hit, note: rest.slice(hit.length).trim() };
 }
 
+// n is the ticket's own number (#45), not its place on a list
 async function pick(env, uid, n, B) {
-  const ids = JSON.parse((await getS(env, "pm_list:" + uid)) || "[]");
-  const id = ids[n - 1];
-  if (!id) return { err: ids.length ? `No ${n} on the last list (it had ${ids.length}).` : "Send today, who or find first; the numbers come from that list." };
-  const x = B.tickets.find((t) => t.id === id);
-  if (!x) return { err: `Ticket ${n} is gone from the board. Send today again.` };
+  const x = [...(B.tickets || []), ...(B.parked || [])].find((t) => t.num === n);
+  if (!x) return { err: `No ticket #${n}. Send today or find to see the numbers.` };
   return { x };
 }
 
