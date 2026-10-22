@@ -182,7 +182,9 @@ async function onText(ev, m, env, uid) {
   }
   if (flag(env, "OWNERS")) {
     const o = is("owner", { rest: true });
-    if (o !== null) return /^(off|ปิด|stop)$/i.test(o) ? ownerOff(ev, env, uid) : claim(ev, env, uid, o);
+    // "off" in either language, alone or paired: the reply prints "เจ้าของ ปิด · owner off",
+    // which leaves "ปิด · owner off" here once "เจ้าของ" is read.
+    if (o !== null) return /^(off|ปิด|stop)(\s*·\s*(owner\s+)?(off|ปิด|stop))?$/i.test(o.trim()) ? ownerOff(ev, env, uid) : claim(ev, env, uid, o);
   }
   if (flag(env, "SPOTTERS")) {
     if (is("credit") !== null) return credit(ev, env, uid, true);
