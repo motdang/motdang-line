@@ -110,11 +110,13 @@ test("give asks first, posts only on yes", async () => {
   assert.equal(acts().length, 1, "a second yes does not post again");
 });
 
-test("give to someone at their limit says it goes to Waiting", async () => {
-  const { env, said } = setup();
+test("give to someone at their limit is refused before any yes", async () => {
+  const { env, said, acts } = setup();
   await send(env, "today");
   await send(env, "give 2 Marcus");
-  assert.match(last(said), /holds 5\/5, so it goes to Waiting/);
+  assert.match(last(said), /Marcus holds 5\/5, the limit\. Pick someone else/);
+  await send(env, "yes");
+  assert.equal(acts().length, 0, "nothing posted");
 });
 
 test("no cancels; fail needs a reason; unknown person is named", async () => {

@@ -233,8 +233,10 @@ export async function onPm(ev, env) {
       const pn = personAndNote(c.rest, B.holders);
       if (!pn) return say(env, ev, `Give ${c.n} to whom? ${B.holders.join(", ")}`);
       const busy = B.load[pn.who] ?? 0, cap = B.cap[pn.who];
+      // the wheel refuses a person who already holds the limit (Michael, 2026-10-22)
+      if (cap !== undefined && busy >= cap && !x.who.includes(pn.who)) return say(env, ev, `${pn.who} holds ${busy}/${cap}, the limit. Pick someone else: ${B.holders.filter((h) => (B.load[h] ?? 0) < (B.cap[h] ?? 99)).join(", ")}`);
       body = { id: x.id, act: "give", who: pn.who, note: pn.note };
-      q = `Give ${c.n} · ${t}\nto ${pn.who}${cap !== undefined && busy >= cap ? ` (holds ${busy}/${cap}, so it goes to Waiting)` : ""}${pn.note ? `\nNote: ${pn.note}` : ""}\nThis pings them in Discord.`;
+      q = `Give ${c.n} · ${t}\nto ${pn.who}${cap !== undefined ? ` (holds ${busy}/${cap})` : ""}${pn.note ? `\nNote: ${pn.note}` : ""}\nThis pings them in Discord.`;
       done = `${c.n} given to ${pn.who}.`; yes = "Yes, give";
     } else if (c.k === "pass") {
       body = { id: x.id, act: "pass", note: c.note };
