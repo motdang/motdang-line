@@ -240,3 +240,33 @@ test("done alone ticks the one due; a repeat already done, or someone else's, is
   assert.match(last(said), /No repeat called "sweep"\. Yours: Check the mailbox, Water the plants/);
   assert.equal(wheel.filter((w) => w.path === "/api/repeat/done").length, 1);
 });
+
+test("a short title still gets a done word that matches it (CodeRabbit, #8)", async () => {
+  const { env, said, wheel } = setup();
+  const board = BOARD;
+  const orig = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    if (String(url).startsWith("https://wheel.test")) {
+      const B = board(); B.repeats = [{ n: 9, title: "Go", face: "🔁", whoName: "Michael", due: true, slot: "2026-10-22", next: "2026-10-23" }];
+      wheel.push({ path: String(url).slice(18), body: init?.body ? JSON.parse(init.body) : null });
+      return new Response(JSON.stringify(B), { status: 200 });
+    }
+    return orig(url, init);
+  };
+  await send(env, "today");
+  assert.match(last(said), /🔁 Go → send: done go/);
+  await send(env, "done go");
+  assert.deepEqual(wheel.find((w) => w.path === "/api/repeat/done").body, { n: 9 });
+});
+
+test("undo keeps its place when the wheel fails, so a retry still works (CodeRabbit, #8)", async () => {
+  const { env, said } = setup();
+  await send(env, "done mailbox");
+  const orig = globalThis.fetch;
+  globalThis.fetch = async (url, init) => String(url).startsWith("https://wheel.test") ? new Response("{}", { status: 500 }) : orig(url, init);
+  await send(env, "undo");
+  assert.match(last(said), /The wheel didn't answer/);
+  globalThis.fetch = orig;
+  await send(env, "undo");
+  assert.match(last(said), /not done again/);
+});

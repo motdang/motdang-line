@@ -76,7 +76,8 @@ const mine = (B) => (B.repeats || []).filter((r) => r.whoName === B.me.name);
 const DAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dayOf = (d) => DAY[new Date(d + "T12:00:00Z").getUTCDay()];
 const dayDate = (d) => `${dayOf(d)} ${+d.slice(8)} ${new Date(d + "T12:00:00Z").toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" })}`;
-const word = (r) => (r.title.toLowerCase().match(/[a-z\u0E00-\u0E7F]{3,}/g) || ["repeat"]).filter((w) => !["check", "the", "and"].includes(w))[0] || "repeat";
+// the word "done <word>" needs; a title with no long word uses itself (CodeRabbit, #8)
+const word = (r) => (r.title.toLowerCase().match(/[a-z\u0E00-\u0E7F]{3,}/g) || []).filter((w) => !["check", "the", "and"].includes(w))[0] || r.title.toLowerCase().trim();
 function repeatLines(B) {
   const due = mine(B).filter((r) => r.due);
   return due.map((r) => `${r.face || "🔁"} ${short(r.title)}${r.late ? ` · since ${dayOf(r.slot)}` : r.time ? ` · ${r.time}` : ""} → send: done ${word(r)}`);
@@ -243,8 +244,8 @@ export async function onPm(ev, env) {
     if (c.k === "undo") {
       const u = JSON.parse((await getS(env, "pm_undo:" + uid)) || "null");
       if (!u || Date.now() - u.at > WAIT_MS) return say(env, ev, "Nothing to undo.");
-      await setS(env, "pm_undo:" + uid, "");
       await wheel(env, "/api/repeat/done", { n: u.n, undo: true, was: u.was });
+      await setS(env, "pm_undo:" + uid, ""); // only after the wheel took it back (CodeRabbit, #8)
       return say(env, ev, `↩︎ ${u.title} is not done again.`);
     }
     if (c.k === "who") {
