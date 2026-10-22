@@ -124,6 +124,16 @@ test("give to someone at their limit is refused before any yes", async () => {
   assert.equal(acts().length, 0, "nothing posted");
 });
 
+test("someone at their limit can still be given a ticket they already hold", async () => {
+  const { env, said, acts } = setup();
+  await send(env, "find gold");
+  await send(env, "give 1 Marcus");
+  assert.doesNotMatch(last(said), /the limit/);
+  await send(env, "yes");
+  assert.equal(acts()[0].body.id, "t4");
+  assert.equal(acts()[0].body.who, "Marcus");
+});
+
 test("no cancels; fail needs a reason; unknown person is named", async () => {
   const { env, said, acts } = setup();
   await send(env, "today");
