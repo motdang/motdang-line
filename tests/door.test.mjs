@@ -350,6 +350,22 @@ test("a claim waits for a person; approved, what the owner sends goes to the pla
   assert.equal(rows(env, "SELECT * FROM page_items").length, 2);
 });
 
+test("owner off works as the bot prints it, and in each language alone", async () => {
+  for (const off of ["เจ้าของ ปิด · owner off", "owner off", "เจ้าของ ปิด", "เจ้าของ · owner off", "Owner Off"]) {
+    const { env, said } = room(["PAGES", "OWNERS"]);
+    await deliver(worker, env, [dm.text("owner MD-4F2K9")]);
+    const list = await (await get(env, "/desk/owners", DESK)).json();
+    await post(env, `/desk/owners/${list.claims[0].id}`, { decision: "approve" }, DESK);
+    await deliver(worker, env, [dm.text("owner MD-4F2K9")]);
+    assert.match(lastText(said), /owner edit/, off);
+    await deliver(worker, env, [dm.text(off)]);
+    assert.match(lastText(said), /your own page again/, off);
+    assert.equal(rows(env, "SELECT * FROM owner_claims").length, 1, `${off}: no new claim`);
+    await deliver(worker, env, [dm.text("back on my page")]);
+    assert.equal(rows(env, "SELECT * FROM owner_edits").length, 0, `${off}: posts go to the page`);
+  }
+});
+
 test("an unknown code, or a codes file that is not JSON, names no place", async () => {
   const { env, said } = room(["OWNERS"]);
   await deliver(worker, env, [dm.text("owner MD-9ZZZZ"), dm.text("owner MD-4ZZZZ"), dm.text("owner hello")]);
