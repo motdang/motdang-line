@@ -70,13 +70,26 @@ const ICON = { Open: "📥", Doing: "🔨", Waiting: "⏳", Done: "✅" };
 const short = (s, n = 70) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
 const row = (x, i) => `${i}. ${ICON[x.state] || ""} ${short(x.title)} · ${x.who.join(", ") || "nobody"}`;
 
+// Repeats (the wheel's 🔁): jobs that come back to one person on chosen weekdays.
+// Ticking one posts nothing in Discord, so it needs no yes; "undo" takes it back.
+const mine = (B) => (B.repeats || []).filter((r) => r.whoName === B.me.name);
+const DAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dayOf = (d) => DAY[new Date(d + "T12:00:00Z").getUTCDay()];
+const dayDate = (d) => `${dayOf(d)} ${+d.slice(8)} ${new Date(d + "T12:00:00Z").toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" })}`;
+// the word "done <word>" needs; a title with no long word uses itself (CodeRabbit, #8)
+const word = (r) => (r.title.toLowerCase().match(/[a-z\u0E00-\u0E7F]{3,}/g) || []).filter((w) => !["check", "the", "and"].includes(w))[0] || r.title.toLowerCase().trim();
+function repeatLines(B) {
+  const due = mine(B).filter((r) => r.due);
+  return due.map((r) => `${r.face || "🔁"} ${short(r.title)}${r.late ? ` · since ${dayOf(r.slot)}` : r.time ? ` · ${r.time}` : ""} → send: done ${word(r)}`);
+}
+
 // Numbers run on across the sections of one answer, and that numbering is what
 // the next "give 3 …" means.
 function numbered(sections) {
   const ids = [], out = [];
   for (const [head, items, empty] of sections) {
     out.push(head);
-    if (!items.length) out.push(empty);
+    if (!items.length && empty) out.push(empty); // no "empty" line: a section of plain lines
     for (const x of items) { ids.push(x.id); out.push(row(x, ids.length)); }
   }
   return { ids, text: out.join("\n") };
@@ -101,6 +114,7 @@ const HELP = [
   "doing 3 · waiting 3 · done 3 · open 3",
   "first 3 · next 3 · later 3 · your order",
   "back 3 what is missing · to NaN",
+  "done mailbox · tick a 🔁 repeat done (undo takes it back)",
   "link · your wheel page",
   "Anything that posts asks for a yes first.",
 ].join("\n");
@@ -144,6 +158,9 @@ export function parse(text) {
   if (/^(today|check|chase)$/.test(low)) return { k: "today" };
   if (/^(report|sitrep|status)$/.test(low)) return { k: "report" };
   if (/^(link|wheel|board)$/.test(low)) return { k: "link" };
+  if (/^undo$/.test(low)) return { k: "undo" };
+  // "done mailbox" ticks a repeat; "done 3" (a number) stays the ticket word below
+  if ((m = s.match(/^(?:done|did)(?:\s+(?!#?\d+(?:\s|$))(.+))?$/i))) return { k: "rdone", words: (m[1] || "").trim() };
   if ((m = s.match(/^who\s+(.+)$/i))) return { k: "who", name: m[1] };
   if ((m = s.match(/^find\s+(.+)$/i))) return { k: "find", words: m[1] };
   if ((m = s.match(/^#?(\d{1,3})$/))) return { k: "open", n: +m[1] };
@@ -200,13 +217,37 @@ export async function onPm(ev, env) {
       const check = lists.check(B), give = lists.give(B), quiet = lists.quiet(B);
       const drafts = (B.drafts || []).length;
       const hold = "Holding: " + B.holders.map((p) => `${p} ${B.load[p] ?? 0}${B.cap[p] ? "/" + B.cap[p] : ""}`).join(", ");
+      const rep = repeatLines(B);
       return show(env, ev, uid, [
+        ...(rep.length ? [["🔁 Due today\n" + rep.join("\n"), [], ""]] : []),
         ["✅ To check (marked Done)", check.slice(0, 8), "Nothing to check."],
         ["👉 To give out (nobody holds it)", give.slice(0, 8), "Nothing to give out."],
         ["💤 Quiet 4+ days", quiet.slice(0, 6), "Nothing quiet."],
       ], hold + (drafts ? `\n📝 ${drafts} drafts not posted yet: post them on the wheel (send link).` : ""));
     }
     if (c.k === "report") return say(env, ev, sitrep(B));
+    if (c.k === "rdone") {
+      const R = mine(B);
+      if (!R.length) return say(env, ev, "You have no 🔁 repeats. Make one on the wheel (send link).");
+      const words = c.words.toLowerCase().split(" ").filter(Boolean);
+      let hits = words.length ? R.filter((r) => words.every((w) => r.title.toLowerCase().includes(w))) : R.filter((r) => r.due);
+      if (hits.length > 1) hits = hits.filter((r) => r.due).length ? hits.filter((r) => r.due) : hits;
+      if (!hits.length) return say(env, ev, words.length ? `No repeat called "${c.words}". Yours: ${R.map((r) => r.title).join(", ")}` : "Nothing due today.");
+      if (hits.length > 1) return say(env, ev, "Which one?\n" + hits.map((r) => `done ${word(r)} · ${r.title}`).join("\n"));
+      const r = hits[0];
+      if (!r.due) return say(env, ev, `${r.face || "🔁"} ${r.title} is already done. Next: ${dayDate(r.next)}.`);
+      const d = await wheel(env, "/api/repeat/done", { n: r.n });
+      await setS(env, "pm_undo:" + uid, JSON.stringify({ n: r.n, was: d.was ?? null, title: r.title, at: Date.now() }));
+      const after = (d.repeats || []).find((x) => x.n === r.n);
+      return say(env, ev, `✅ ${r.face || "🔁"} ${r.title}, done.${after?.next ? ` Next: ${dayDate(after.next)}.` : ""} Nothing posted.\n(undo takes it back)`);
+    }
+    if (c.k === "undo") {
+      const u = JSON.parse((await getS(env, "pm_undo:" + uid)) || "null");
+      if (!u || Date.now() - u.at > WAIT_MS) return say(env, ev, "Nothing to undo.");
+      await wheel(env, "/api/repeat/done", { n: u.n, undo: true, was: u.was });
+      await setS(env, "pm_undo:" + uid, ""); // only after the wheel took it back (CodeRabbit, #8)
+      return say(env, ev, `↩︎ ${u.title} is not done again.`);
+    }
     if (c.k === "who") {
       const who = personAndNote(c.name, B.holders)?.who;
       if (!who) return say(env, ev, `Who? ${B.holders.join(", ")}`);
@@ -233,8 +274,10 @@ export async function onPm(ev, env) {
       const pn = personAndNote(c.rest, B.holders);
       if (!pn) return say(env, ev, `Give ${c.n} to whom? ${B.holders.join(", ")}`);
       const busy = B.load[pn.who] ?? 0, cap = B.cap[pn.who];
+      // the wheel refuses a person who already holds the limit (Michael, 2026-10-22)
+      if (cap !== undefined && busy >= cap && !x.who.includes(pn.who)) return say(env, ev, `${pn.who} holds ${busy}/${cap}, the limit. Pick someone else: ${B.holders.filter((h) => (B.load[h] ?? 0) < (B.cap[h] ?? 99)).join(", ")}`);
       body = { id: x.id, act: "give", who: pn.who, note: pn.note };
-      q = `Give ${c.n} · ${t}\nto ${pn.who}${cap !== undefined && busy >= cap ? ` (holds ${busy}/${cap}, so it goes to Waiting)` : ""}${pn.note ? `\nNote: ${pn.note}` : ""}\nThis pings them in Discord.`;
+      q = `Give ${c.n} · ${t}\nto ${pn.who}${cap !== undefined ? ` (holds ${busy}/${cap})` : ""}${pn.note ? `\nNote: ${pn.note}` : ""}\nThis pings them in Discord.`;
       done = `${c.n} given to ${pn.who}.`; yes = "Yes, give";
     } else if (c.k === "pass") {
       body = { id: x.id, act: "pass", note: c.note };
