@@ -165,10 +165,10 @@ export function parse(text) {
   if ((m = s.match(/^who\s+(.+)$/i))) return { k: "who", name: m[1] };
   if ((m = s.match(/^find\s+(.+)$/i))) return { k: "find", words: m[1] };
   if ((m = s.match(/^#?(\d{1,4})$/))) return { k: "open", n: +m[1] };
-  if ((m = s.match(/^give\s+#?(\d{1,3})\s+(?:to\s+)?(.+)$/i))) return { k: "give", n: +m[1], rest: m[2] };
-  if ((m = s.match(/^(pass|fail|note|back)\s+#?(\d{1,3})(?:\s+([\s\S]+))?$/i))) return { k: m[1].toLowerCase(), n: +m[2], note: (m[3] || "").trim() };
-  if ((m = s.match(/^(open|doing|waiting|done)\s+#?(\d{1,3})(?:\s+([\s\S]+))?$/i))) return { k: "state", state: STATES[m[1].toLowerCase()], n: +m[2], note: (m[3] || "").trim() };
-  if ((m = s.match(/^(first|next|later|unorder)\s+#?(\d{1,3})$/i))) return { k: "rank", rank: RANKS[m[1].toLowerCase()], n: +m[2] };
+  if ((m = s.match(/^give\s+#?(\d{1,4})\s+(?:to\s+)?(.+)$/i))) return { k: "give", n: +m[1], rest: m[2] };
+  if ((m = s.match(/^(pass|fail|note|back)\s+#?(\d{1,4})(?:\s+([\s\S]+))?$/i))) return { k: m[1].toLowerCase(), n: +m[2], note: (m[3] || "").trim() };
+  if ((m = s.match(/^(open|doing|waiting|done)\s+#?(\d{1,4})(?:\s+([\s\S]+))?$/i))) return { k: "state", state: STATES[m[1].toLowerCase()], n: +m[2], note: (m[3] || "").trim() };
+  if ((m = s.match(/^(first|next|later|unorder)\s+#?(\d{1,4})$/i))) return { k: "rank", rank: RANKS[m[1].toLowerCase()], n: +m[2] };
   return { k: "unknown" };
 }
 
