@@ -263,9 +263,15 @@ test("undo keeps its place when the wheel fails, so a retry still works (CodeRab
   const { env, said } = setup();
   await send(env, "done mailbox");
   const orig = globalThis.fetch;
-  globalThis.fetch = async (url, init) => String(url).startsWith("https://wheel.test") ? new Response("{}", { status: 500 }) : orig(url, init);
+  const calls = [];
+  globalThis.fetch = async (url, init) => {
+    const u = String(url);
+    if (u.startsWith("https://wheel.test")) calls.push(u.slice(18));
+    return u === "https://wheel.test/api/repeat/done" ? new Response("{}", { status: 500 }) : orig(url, init);
+  };
   await send(env, "undo");
   assert.match(last(said), /The wheel didn't answer/);
+  assert.deepEqual(calls, ["/api/repeat/done"], "undo goes straight to the repeat, no board first (#9)");
   globalThis.fetch = orig;
   await send(env, "undo");
   assert.match(last(said), /not done again/);
