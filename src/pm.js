@@ -212,6 +212,14 @@ export async function onPm(ev, env) {
       return say(env, ev, `Done: ${w.done}`);
     }
 
+    if (c.k === "undo") {
+      const u = JSON.parse((await getS(env, "pm_undo:" + uid)) || "null");
+      if (!u || Date.now() - u.at > WAIT_MS) return say(env, ev, "Nothing to undo.");
+      await wheel(env, "/api/repeat/done", { n: u.n, undo: true, was: u.was });
+      await setS(env, "pm_undo:" + uid, ""); // only after the wheel took it back (CodeRabbit, #8); needs no board (#9)
+      return say(env, ev, `↩︎ ${u.title} is not done again.`);
+    }
+
     const B = await wheel(env, "/api/board");
     if (c.k === "today") {
       const check = lists.check(B), give = lists.give(B), quiet = lists.quiet(B);
@@ -241,13 +249,7 @@ export async function onPm(ev, env) {
       const after = (d.repeats || []).find((x) => x.n === r.n);
       return say(env, ev, `✅ ${r.face || "🔁"} ${r.title}, done.${after?.next ? ` Next: ${dayDate(after.next)}.` : ""} Nothing posted.\n(undo takes it back)`);
     }
-    if (c.k === "undo") {
-      const u = JSON.parse((await getS(env, "pm_undo:" + uid)) || "null");
-      if (!u || Date.now() - u.at > WAIT_MS) return say(env, ev, "Nothing to undo.");
-      await wheel(env, "/api/repeat/done", { n: u.n, undo: true, was: u.was });
-      await setS(env, "pm_undo:" + uid, ""); // only after the wheel took it back (CodeRabbit, #8)
-      return say(env, ev, `↩︎ ${u.title} is not done again.`);
-    }
+
     if (c.k === "who") {
       const who = personAndNote(c.name, B.holders)?.who;
       if (!who) return say(env, ev, `Who? ${B.holders.join(", ")}`);
